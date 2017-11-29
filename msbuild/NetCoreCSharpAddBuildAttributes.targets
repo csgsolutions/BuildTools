@@ -1,13 +1,13 @@
 <Project>
 	
 	<PropertyGroup Condition=" '$(BuildNumber)' == '' ">
-		<BuildNumber>NOT_SET<BuildNumber>
+		<BuildNumber>NOT_SET</BuildNumber>
 		<BuildNumber Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</BuildNumber>
 		<BuildNumber Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' ">$(APPVEYOR_BUILD_NUMBER)</BuildNumber>
 		<BuildNumber Condition=" '$(CSG_BUILDDATE)' != '' ">$(CSG_BUILDDATE)</BuildNumber>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(CommitRevision)' == '' ">
-		<CommitRevision>NOT_SET<BuildNumber>
+		<CommitRevision>NOT_SET</CommitRevision>
 		<CommitRevision Condition=" '$(CSG_SVNREV)' != '' ">$(CSG_SVNREV)</CommitRevision>
 		<CommitRevision Condition=" '$(BUILD_SOURCEVERSION)' != '' ">$(CSG_SVNREV)</CommitRevision>
 		<CommitRevision Condition=" '$(GIT_COMMITHASH)' != '' ">$(GIT_COMMITHASH)</CommitRevision>
@@ -20,11 +20,11 @@
 	<Target Name="AddAssemblyMetadata" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' ">
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
-		  <AssemblyAttributes Include="AssemblyMetadata">
+		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(BuildNumber)' != ''">
 			<_Parameter1>BuildNumber</_Parameter1>
 			<_Parameter2>$(BuildNumber)</_Parameter2>
 		  </AssemblyAttributes>
-		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(CSG_SVNREV)' != ''">
+		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(CommitRevision)' != ''">
 			<_Parameter1>CommitRevision</_Parameter1>
 			<_Parameter2>$(CommitRevision)</_Parameter2>
 		  </AssemblyAttributes>
