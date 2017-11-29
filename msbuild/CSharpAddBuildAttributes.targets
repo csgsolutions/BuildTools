@@ -9,7 +9,7 @@
 	<PropertyGroup Condition=" '$(CommitRevision)' == '' ">
 		<CommitRevision>NOT_SET</CommitRevision>
 		<CommitRevision Condition=" '$(CSG_SVNREV)' != '' ">$(CSG_SVNREV)</CommitRevision>
-		<CommitRevision Condition=" '$(BUILD_SOURCEVERSION)' != '' ">$(CSG_SVNREV)</CommitRevision>
+		<CommitRevision Condition=" '$(BUILD_SOURCEVERSION)' != '' ">$(BUILD_SOURCEVERSION)</CommitRevision>
 		<CommitRevision Condition=" '$(GIT_COMMITHASH)' != '' ">$(GIT_COMMITHASH)</CommitRevision>
 	</PropertyGroup>
 	
