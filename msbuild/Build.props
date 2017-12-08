@@ -1,0 +1,16 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	
+	<PropertyGroup Condition=" '$(BuildNumber)' == '' ">
+		<BuildNumber>NOT_SET</BuildNumber>
+		<BuildNumber Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</BuildNumber>
+		<BuildNumber Condition=" '$(APPVEYOR_BUILD_NUMBER)' != '' ">$(APPVEYOR_BUILD_NUMBER)</BuildNumber>
+		<BuildNumber Condition=" '$(CSG_BUILDDATE)' != '' ">$(CSG_BUILDDATE)</BuildNumber>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(CommitRevision)' == '' ">
+		<CommitRevision>NOT_SET</CommitRevision>
+		<CommitRevision Condition=" '$(CSG_SVNREV)' != '' ">$(CSG_SVNREV)</CommitRevision>
+		<CommitRevision Condition=" '$(BUILD_SOURCEVERSION)' != '' ">$(BUILD_SOURCEVERSION)</CommitRevision>
+		<CommitRevision Condition=" '$(GIT_COMMITHASH)' != '' ">$(GIT_COMMITHASH)</CommitRevision>
+	</PropertyGroup>
+	
+</Project>

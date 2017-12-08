@@ -1,16 +1,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<Import Project="Build.props" />
-	
-	<Target Name="AddAssemblyMetadata" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' ">
+
+	<Target Name="AddAssemblyDescription" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' ">
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
-		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(BuildNumber)' != ''">
-			<_Parameter1>BuildNumber</_Parameter1>
-			<_Parameter2>$(BuildNumber)</_Parameter2>
-		  </AssemblyAttributes>
-		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(CommitRevision)' != ''">
-			<_Parameter1>CommitRevision</_Parameter1>
-			<_Parameter2>$(CommitRevision)</_Parameter2>
+		  <AssemblyAttributes Include="AssemblyDescription">
+			<_Parameter1>CommitRev: $(CommitRevision)$, BuildNo: $(BuildNumber)</_Parameter1>
 		  </AssemblyAttributes>
 		</ItemGroup>
 		<Touch Files="obj\GeneratedAssemblyInfo.cs" AlwaysCreate="true"/>
@@ -18,5 +13,5 @@
 		<ItemGroup>
 		  <Compile Include="obj\GeneratedAssemblyInfo.cs" />
 		</ItemGroup>
-	</Target>
+	</Target>	
 </Project>
