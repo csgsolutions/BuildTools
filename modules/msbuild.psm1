@@ -24,9 +24,8 @@ function Find-MSBuild([int]$Version = $default_msbuild_version){
 		
 	$msbuildexe = Find-FirstExistingPath -Paths $testpaths
 	
-	# Fallback on Build Tools
-	if (!(Test-Path $msbuildexe)) {
-		return ""
+	if (!($msbuildexe) -OR !(Test-Path -Path $msbuildexe)){
+		throw "MSBuild.exe could not be located."
 	}
 	
 	return $msbuildexe
@@ -53,9 +52,8 @@ function Find-MSTest([int]$Version = $default_mstest_version){
 	
 	$mstestexe = Find-FirstExistingPath -Paths $testpaths
 	
-	# Fallback on Build Tools
-	if (!(Test-Path $mstestexe)) {
-		return ""
+	if (!($mstestexe) -OR !(Test-Path -Path $mstestexe)){
+		throw "MSTest.exe could not be located."
 	}
 	
 	return $mstestexe
@@ -65,11 +63,6 @@ function Find-MSTest([int]$Version = $default_mstest_version){
 function Start-MSBuild([string]$Project, [int]$Version = $default_msbuild_version, [string]$Target = "Build", [string]$Configuration = "Debug", [string]$Verbosity = "M") {
 	$msbuildexe = Find-MSBuild -Version $Version
 
-	if (!(Test-Path -Path $msbuildexe)){
-		Write-Error "MSBuild not found."
-		return 3
-	}
-
 	Invoke-Expression "& '$msbuildexe' '/t:$Target' '/p:Configuration=$Configuration' '/v:$Verbosity' '$Project'" | Write-Host
 
 	return $LASTEXITCODE
@@ -77,11 +70,6 @@ function Start-MSBuild([string]$Project, [int]$Version = $default_msbuild_versio
 
 function Start-MSTest([string]$Project, [int]$Version = $default_mstest_version) {
 	$mstestexe = Find-MSTest -Version $Version
-
-	if (!(Test-Path -Path $mstestexe)){
-		Write-Error "MSTest not found."
-		return 3
-	}
 
 	Invoke-Expression "& '$mstestexe' '/testcontainer:$Project'" | Write-Host
 	
