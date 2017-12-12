@@ -46,7 +46,8 @@ function Find-MSTest([int]$Version = $default_mstest_version){
 		$testpaths = @(
 			"$program_files\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\mstest.exe",
 			"$program_files\Microsoft Visual Studio\2017\Professional\Common7\IDE\mstest.exe",
-			"$program_files\Microsoft Visual Studio\2017\BuildTools\Common7\IDE\mstest.exe"
+			"$program_files\Microsoft Visual Studio\2017\BuildTools\Common7\IDE\mstest.exe",
+			"$program_files\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\mstest.exe"
 		)
 	}
 	
