@@ -70,7 +70,7 @@ function Start-MSBuild([string]$Project, [int]$Version = $default_msbuild_versio
 		return 3
 	}
 
-	Invoke-Expression "& '$msbuildexe' '/t:$Target' '/p:Configuration=$Configuration' '/v:$Verbosity' '$Project'"
+	Invoke-Expression "& '$msbuildexe' '/t:$Target' '/p:Configuration=$Configuration' '/v:$Verbosity' '$Project'" | Write-Host
 
 	return $LASTEXITCODE
 }
@@ -83,7 +83,7 @@ function Start-MSTest([string]$Project, [int]$Version = $default_mstest_version)
 		return 3
 	}
 
-	Invoke-Expression "& '$mstestexe' '/testcontainer:$Project'"
+	Invoke-Expression "& '$mstestexe' '/testcontainer:$Project'" | Write-Host
 	
 	return $LASTEXITCODE
 }

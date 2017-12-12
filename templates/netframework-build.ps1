@@ -13,7 +13,7 @@ Param(
 
 $Solution=".\<SOLUTION_NAME>.sln"
 $TestProjects = @(
-	#".\src\<TEST_PROJECT_NAME>\bin\Release\<TEST_PROJECT_NAME>.dll"
+	#".\src\<TEST_PROJECT_NAME>\bin\$Configuration\<TEST_PROJECT_NAME>.dll"
 )
 $OutputPackages = @(
 	#".\src\<PROJECT_NAME>\.csproj"

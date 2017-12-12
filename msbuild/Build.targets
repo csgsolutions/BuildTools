@@ -1,0 +1,42 @@
+<Project>
+	<Import Project="Build.props" />
+	
+	<Target Name="AddAssemblyMetadataCSharp" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' AND '$(MSBuildProjectExtension)' == '.csproj'">
+		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
+		<ItemGroup>
+		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(BuildNumber)' != ''">
+				<_Parameter1>BuildNumber</_Parameter1>
+				<_Parameter2>$(BuildNumber)</_Parameter2>
+		  </AssemblyAttributes>
+		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(CommitRevision)' != ''">
+				<_Parameter1>CommitRevision</_Parameter1>
+				<_Parameter2>$(CommitRevision)</_Parameter2>
+		  </AssemblyAttributes>
+		</ItemGroup>
+		<Touch Files="obj\GeneratedAssemblyInfo.cs" AlwaysCreate="true"/>
+		<WriteCodeFragment Language="C#" OutputFile="obj\GeneratedAssemblyInfo.cs" AssemblyAttributes="@(AssemblyAttributes)" />
+		<ItemGroup>
+		  <Compile Include="obj\GeneratedAssemblyInfo.cs" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="AddAssemblyMetadataVB" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' AND '$(MSBuildProjectExtension)' == '.vbproj'">
+		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
+		<ItemGroup>
+		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(BuildNumber)' != ''">
+				<_Parameter1>BuildNumber</_Parameter1>
+				<_Parameter2>$(BuildNumber)</_Parameter2>
+		  </AssemblyAttributes>
+		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(CommitRevision)' != ''">
+				<_Parameter1>CommitRevision</_Parameter1>
+				<_Parameter2>$(CommitRevision)</_Parameter2>
+		  </AssemblyAttributes>
+		</ItemGroup>
+		<Touch Files="obj\GeneratedAssemblyInfo.vb" AlwaysCreate="true"/>
+		<WriteCodeFragment Language="VB" OutputFile="obj\GeneratedAssemblyInfo.vb" AssemblyAttributes="@(AssemblyAttributes)" />
+		<ItemGroup>
+		  <Compile Include="obj\GeneratedAssemblyInfo.vb" />
+		</ItemGroup>
+	</Target>
+
+</Project>

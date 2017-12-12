@@ -2,6 +2,7 @@
 	<Import Project="Build.props" />
 	
 	<Target Name="AddAssemblyMetadata" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' ">
+		<Warning Text="CSharpAddBuildAttributes.ps1 is deprecated. Use Build.targets instead." />
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
 		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(BuildNumber)' != ''">

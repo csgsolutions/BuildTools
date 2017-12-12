@@ -1,11 +1,8 @@
 <Project>
 	<Import Project="Build.props" />
 	
-	<PropertyGroup>
-		<VersionSuffix Condition="'$(CI)' != '' AND '$(VersionSuffix)' != '' AND '$(BuildNumber)' != ''">$(VersionSuffix)-$(BuildNumber)</VersionSuffix>
-	</PropertyGroup>
-	
 	<Target Name="AddAssemblyMetadata" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' ">
+		<Warning Text="NetCoreCSharpAddBuildAttributes.ps1 is deprecated. Use Build.targets instead." />
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
 		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(BuildNumber)' != ''">
