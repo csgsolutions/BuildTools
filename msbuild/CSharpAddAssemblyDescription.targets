@@ -5,7 +5,7 @@
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
 		  <AssemblyAttributes Include="AssemblyDescription">
-			<_Parameter1>CommitRev: $(CommitRevision), BuildNo: $(BuildNumber)</_Parameter1>
+				<_Parameter1>CommitRev: $(CommitRevision), BuildNo: $(BuildNumber)</_Parameter1>
 		  </AssemblyAttributes>
 		</ItemGroup>
 		<Touch Files="obj\GeneratedAssemblyInfo.cs" AlwaysCreate="true"/>

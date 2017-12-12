@@ -18,46 +18,50 @@ $TestProjects = @(
 	".\src\<TEST_PROJECT_NAME>\<TEST_PROJECT_NAME>.csproj"
 )
 
-$PackProjects = @(
+$OutputPackages = @(
 	".\src\<PROJECT_NAME>\.csproj"
 )
 
-#### ---- MAIN ---- ####
+Write-Host "=============================================================================="
+Write-Host "The Build Script"
+Write-Host "=============================================================================="
+
 try {
-	. "$PSScriptRoot/bootstrap.ps1"
-	Write-Host "BuildTools Initialization..." -NoNewline
-	Get-BuildTools | Out-Null
-	Write-Host "Done"
+	. "$PSScriptRoot/bootstrap.ps1"	
+	Get-BuildTools -Version $BuildToolsVersion | Out-Null
 
 	# RESTORE
-	Write-Output "Restoring packages..."
+	Write-Host "Restoring Packages..." -ForegroundColor Magenta
 	dotnet restore $SOLUTION
 	if ($LASTEXITCODE -ne 0){
 		throw "Package restore failed with exit code $LASTEXITCODE."
 	}
 
 	# BUILD SOLUTION
-	Write-Output "Performing build..."
+	Write-Host "Performing build..." -ForegroundColor Magenta	
 	dotnet build $SOLUTION --configuration $Configuration
 	if ($LASTEXITCODE -ne 0){
 		throw "Build failed with exit code $LASTEXITCODE."
 	}
 
+	# RUN TESTS
 	if ( !($NoTest.IsPresent) -and $TestProjects.Length -gt 0 ) {
-		Write-Output "Performing tests..."
+		Write-Host "Performing tests..." -ForegroundColor Magenta
 		foreach ($test_proj in $TestProjects) {
-			Write-Output "Testing $test_proj"
+			Write-Host "Testing $test_proj"			
+			#Note: The --logger parameter is for specifically for mstest to make it output test results
 			dotnet test $test_proj --no-build --configuration $Configuration --logger "trx;logfilename=TEST-out.xml"
 			if ($LASTEXITCODE -ne 0){
 				throw "Test failed with code $LASTEXITCODE"
 			}
 		}
 	}
+
 	# CREATE NUGET PACKAGES
 	if ( $OutputPackages.Length -gt 0 ) {
-		Write-Output "Packaging..."
+		Write-Host "Packaging..."  -ForegroundColor Magenta
 		foreach ($pack_proj in $OutputPackages){
-			Write-Output "Packing $pack_proj"
+			Write-Host "Packing $pack_proj"
 			dotnet pack $pack_proj --no-build --configuration $Configuration
 			if ($result -ne 0){
 				throw "Pack failed with code $result"
@@ -65,16 +69,10 @@ try {
 		}
 	}
 
-	Write-Output "-------------------"
-	Write-Output "EVERYTHING WAS GOOD"
-	Write-Output "-------------------"
-		
+	Write-Host "All Done. This build is great!" -ForegroundColor Green
 	exit 0
 } catch {
-	Write-Error $_
-	Write-Output "-------------"
-	Write-Output "*** ERROR ***"
-	Write-Output "-------------"
 	Write-Host "ERROR: An error occurred and the build was aborted." -ForegroundColor White -BackgroundColor Red
+	Write-Error $_	
 	exit 3
 }

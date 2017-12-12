@@ -5,12 +5,12 @@
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
 		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(BuildNumber)' != ''">
-			<_Parameter1>BuildNumber</_Parameter1>
-			<_Parameter2>$(BuildNumber)</_Parameter2>
+				<_Parameter1>BuildNumber</_Parameter1>
+				<_Parameter2>$(BuildNumber)</_Parameter2>
 		  </AssemblyAttributes>
 		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(CommitRevision)' != ''">
-			<_Parameter1>CommitRevision</_Parameter1>
-			<_Parameter2>$(CommitRevision)</_Parameter2>
+				<_Parameter1>CommitRevision</_Parameter1>
+				<_Parameter2>$(CommitRevision)</_Parameter2>
 		  </AssemblyAttributes>
 		</ItemGroup>
 		<Touch Files="obj\GeneratedAssemblyInfo.cs" AlwaysCreate="true"/>

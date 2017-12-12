@@ -10,52 +10,64 @@ function Get-RemoteFile([string]$RemotePath, [string]$LocalPath) {
         $retries -= 1
         try {
             Invoke-WebRequest -UseBasicParsing -Uri $RemotePath -OutFile $LocalPath
-            return
+			
+			return $LocalPath
         }
         catch {
             Write-Verbose "Request failed. $retries retries remaining"
         }
     }
 
-    Write-Error "Download failed: '$RemotePath'."
+	Write-Error "Download failed: '$RemotePath'."
 }
 
 # Inspired by from https://github.com/aspnet/Security/blob/dev/run.ps1
-function Expand-ZipFile([string]$Src, [string]$Dst) {
+function Expand-ZipFile(
+	[Parameter(ValueFromPipeline)]
+	[string]$SourceFile,
+	[string]$DestinationPath
+) {
 	if (Get-Command -Name 'Expand-Archive' -ErrorAction Ignore) {
-		Expand-Archive -Path $Src -DestinationPath $Dst -Force
+		Expand-Archive -Path $SourceFile -DestinationPath $DestinationPath -Force
 	}
 	else {
 		Add-Type -AssemblyName System.IO.Compression.FileSystem
-		[System.IO.Compression.ZipFile]::ExtractToDirectory($Src, $Dst)
+		[System.IO.Compression.ZipFile]::ExtractToDirectory($SourceFile, $DestinationPath)
 	}
 }
 
-function Get-BuildTools(){
+function Get-BuildTools(
+	[string]$Version,
+	[switch]$NoSetEnvironment
+){
+	Write-Host "Initializing build tools..." -NoNewline
+
 	if ($env:CI_BUILDTOOLS_PATH) {
-		$BuildToolsRemotePath = "$($env:CI_BUILDTOOLS_PATH)/$BuildToolsVersion.zip"
+		$remotePath = "$($env:CI_BUILDTOOLS_PATH)/$version.zip"
 	} else {
-		$BuildToolsRemotePath = "https://github.com/csgsolutions/BuildTools/archive/$BuildToolsVersion.zip"
+		$remotePath = "https://github.com/csgsolutions/BuildTools/archive/$version.zip"
 	}
 	
-	$BuildToolsLocalPath = ".\BuildTools-$BuildToolsVersion"
+	$localPath = ".\BuildTools-$version"
 		
-	if ( !(Test-Path $BuildToolsLocalPath) ){
-		$BuildToolsZipFile = "BuildTools-$BuildToolsVersion.zip"
-		Get-RemoteFile $BuildToolsRemotePath $BuildToolsZipFile
-		Expand-ZipFile $BuildToolsZipFile "./"
+	if ( !(Test-Path $localPath) ){
+		Get-RemoteFile $remotePath "BuildTools-$version.zip" | Expand-ZipFile -DestinationPath "./"		
 	}
 	
-	if ( !(Test-Path $BuildToolsLocalPath) ){
+	if ( !(Test-Path $localPath) ){
 		throw "Build tools failed to download"
 	}
 	
-	$absolutePath = (Resolve-Path $BuildToolsLocalPath).Path
-		
-	$env:CI_BUILDTOOLS = $absolutePath
-		
-	Import-Module "$env:CI_BUILDTOOLS\modules\msbuild.psm1"
-	Import-Module "$env:CI_BUILDTOOLS\modules\nuget.psm1"
+	$absolutePath = (Resolve-Path $localPath).Path
 	
+	if (!($NoSetEnvironment.IsPresent)) {
+		$env:CI_BUILDTOOLS = $absolutePath
+	}
+		
+	Import-Module "$absolutePath\modules\msbuild.psm1"
+	Import-Module "$absolutePath\modules\nuget.psm1"
+	
+	Write-Host "Done`r`n"
+
 	return $absolutePath 
 }

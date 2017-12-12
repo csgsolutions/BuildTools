@@ -19,25 +19,27 @@ $OutputPackages = @(
 	#".\src\<PROJECT_NAME>\.csproj"
 )
 
+Write-Host "=============================================================================="
+Write-Host "The Build Script"
+Write-Host "=============================================================================="
+
 try {
 	. "$PSScriptRoot/bootstrap.ps1"
-	Write-Host "BuildTools Initialization..." -NoNewline
-	Get-BuildTools | Out-Null
-	Write-Host "Done"
+	Get-BuildTools -Version $BuildToolsVersion | Out-Null
 
 	# RESTORE PACKAGES
-	Write-Output "Restoring packages..."
+	Write-Host "Restoring Packages..." -ForegroundColor Magenta
 	Start-NuGetRestore -Configuration $Configuration $Solution
 	
 	# BUILD SOLUTION
-	Write-Output "Performing build..."
+	Write-Host "Performing build..." -ForegroundColor Magenta
 	Start-MSBuild -Project $SOLUTION -Configuration $Configuration -Verbosity "M"	
 
 	# RUN TESTS
 	if ( !($NoTest.IsPresent) -and $TestProjects.Length -gt 0 ) {
-		Write-Output "Performing tests..."
+		Write-Host "Performing tests..." -ForegroundColor Magenta
 		foreach ($test_proj in $TestProjects) {
-			Write-Output "Testing $test_proj"
+			Write-Host "Testing $test_proj"
 			$result = Start-MSTest -Project $test_proj	
 			if ($result -ne 0){
 				throw "Test failed with code $result"
@@ -47,9 +49,9 @@ try {
 
 	# CREATE NUGET PACKAGES
 	if ( $OutputPackages.Length -gt 0 ) {
-		Write-Output "Packaging..."
+		Write-Host "Packaging..."  -ForegroundColor Magenta
 		foreach ($pack_proj in $OutputPackages){
-			Write-Output "Packing $pack_proj"
+			Write-Host "Packing $pack_proj"
 			$result = Start-MSBuild -Target "Pack" -Project $pack_proj -Configuration $Configuration -Verbosity "M"
 			if ($result -ne 0){
 				throw "Pack failed with code $result"
@@ -57,16 +59,10 @@ try {
 		}
 	}
 
-	Write-Output "-------------------"
-	Write-Output "EVERYTHING WAS GOOD"
-	Write-Output "-------------------"
-		
+	Write-Host "All Done. This build is great!" -ForegroundColor Green
 	exit 0
 } catch {
-	Write-Error $_
-	Write-Output "-------------"
-	Write-Output "*** ERROR ***"
-	Write-Output "-------------"
 	Write-Host "ERROR: An error occurred and the build was aborted." -ForegroundColor White -BackgroundColor Red
+	Write-Error $_	
 	exit 3
 }

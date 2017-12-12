@@ -13,7 +13,6 @@ function Start-NuGetRestore([string]$Project, [string]$Configuration) {
     $nugetexe = Find-NuGet
 
     if ($nugetexe){
-        Write-Host "Using NuGet exe at $nugetexe"
         Invoke-Expression "& '$nugetexe' restore '$Project'" | Write-Debug
         if ($LASTEXITCODE -ne 0){
 			throw "The NuGet task failed with code: $LASTEXITCODE"
