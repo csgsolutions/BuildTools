@@ -41,7 +41,7 @@ try {
 		foreach ($test_proj in $TestProjects) {
 			Write-Host "Testing $test_proj"
 			$result = Start-MSTest -Project $test_proj	
-			if ($result -ne 0){
+			if ($result -ne 0) {
 				throw "Test failed with code $result"
 			}
 		}
@@ -53,7 +53,7 @@ try {
 		foreach ($pack_proj in $OutputPackages){
 			Write-Host "Packing $pack_proj"
 			$result = Start-MSBuild -Target "Pack" -Project $pack_proj -Configuration $Configuration -Verbosity "M"
-			if ($result -ne 0){
+			if ($result -ne 0) {
 				throw "Pack failed with code $result"
 			}
 		}

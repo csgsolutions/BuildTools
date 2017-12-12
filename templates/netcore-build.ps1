@@ -11,15 +11,12 @@ Param(
 	$NoTest
 )
 
-#### CONFIGURATION ####
 $Solution=".\<SOLUTION_FILE>.sln"
-
 $TestProjects = @(
-	".\src\<TEST_PROJECT_NAME>\<TEST_PROJECT_NAME>.csproj"
+	#".\src\<TEST_PROJECT_NAME>\<TEST_PROJECT_NAME>.csproj"
 )
-
 $OutputPackages = @(
-	".\src\<PROJECT_NAME>\.csproj"
+	#".\src\<PROJECT_NAME>\.csproj"
 )
 
 Write-Host "=============================================================================="
@@ -33,14 +30,14 @@ try {
 	# RESTORE
 	Write-Host "Restoring Packages..." -ForegroundColor Magenta
 	dotnet restore $SOLUTION
-	if ($LASTEXITCODE -ne 0){
+	if ($LASTEXITCODE -ne 0) {
 		throw "Package restore failed with exit code $LASTEXITCODE."
 	}
 
 	# BUILD SOLUTION
 	Write-Host "Performing build..." -ForegroundColor Magenta	
 	dotnet build $SOLUTION --configuration $Configuration
-	if ($LASTEXITCODE -ne 0){
+	if ($LASTEXITCODE -ne 0) {
 		throw "Build failed with exit code $LASTEXITCODE."
 	}
 
@@ -51,7 +48,7 @@ try {
 			Write-Host "Testing $test_proj"			
 			#Note: The --logger parameter is for specifically for mstest to make it output test results
 			dotnet test $test_proj --no-build --configuration $Configuration --logger "trx;logfilename=TEST-out.xml"
-			if ($LASTEXITCODE -ne 0){
+			if ($LASTEXITCODE -ne 0) {
 				throw "Test failed with code $LASTEXITCODE"
 			}
 		}
@@ -63,7 +60,7 @@ try {
 		foreach ($pack_proj in $OutputPackages){
 			Write-Host "Packing $pack_proj"
 			dotnet pack $pack_proj --no-build --configuration $Configuration
-			if ($result -ne 0){
+			if ($LASTEXITCODE -ne 0) {
 				throw "Pack failed with code $result"
 			}
 		}
