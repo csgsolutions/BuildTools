@@ -38,29 +38,24 @@ function Get-BuildTools(){
 		$BuildToolsRemotePath = "https://github.com/csgsolutions/BuildTools/archive/$BuildToolsVersion.zip"
 	}
 	
-	Write-Host "CSG BuildTools Bootstrapper"
-	Write-Host "Downloading CSG BuildTools from $BuildToolsRemotePath"
-
-	$BuildToolsLocalPath = ".\"
-	$BuildToolsZipFile = "BuildTools-$BuildToolsVersion.zip"
-	
-	#Get-RemoteFile $BuildToolsRemotePath $BuildToolsZipFile
-	#Expand-ZipFile $BuildToolsZipFile $BuildToolsLocalPath
-	
-	$build_tools_path = (Resolve-Path "$BuildToolsLocalPath\BuildTools-$BuildToolsVersion").Path
+	$BuildToolsLocalPath = ".\BuildTools-$BuildToolsVersion"
 		
-	$env:CI_BUILDTOOLS = $build_tools_path
-	
-	if ( !(Test-Path $env:CI_BUILDTOOLS) ){
-		Write-Error "Build tools failed to download"
-		exit 3
+	if ( !(Test-Path $BuildToolsLocalPath) ){
+		$BuildToolsZipFile = "BuildTools-$BuildToolsVersion.zip"
+		Get-RemoteFile $BuildToolsRemotePath $BuildToolsZipFile
+		Expand-ZipFile $BuildToolsZipFile "./"
 	}
+	
+	if ( !(Test-Path $BuildToolsLocalPath) ){
+		throw "Build tools failed to download"
+	}
+	
+	$absolutePath = (Resolve-Path $BuildToolsLocalPath).Path
+		
+	$env:CI_BUILDTOOLS = $absolutePath
 		
 	Import-Module "$env:CI_BUILDTOOLS\modules\msbuild.psm1"
 	Import-Module "$env:CI_BUILDTOOLS\modules\nuget.psm1"
 	
-	Write-Host "CSG BuildTools Configuration Complete"
-	Write-Output "Build Tools Path: $env:CI_BUILDTOOLS"
-	
-	return $build_tools_path
+	return $absolutePath 
 }
