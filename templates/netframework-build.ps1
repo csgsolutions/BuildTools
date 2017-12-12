@@ -2,137 +2,71 @@
 #requires -version 4
 # CSG Build Script
 # Copyright 2017 Cornerstone Solutions Group
-
-#### CONFIGURATION ####
-$SOLUTION=".\apps\<SOLUTION_FILE>.sln"
-$BUILD_CONFIG="Release"
-$BuildToolsVersion="0.9.5-test"
-
-$TEST_PROJS = @(
-	".\src\<TEST_PROJECT_NAME>\bin\Release\<TEST_PROJECT_NAME>.dll"
+Param(
+	[alias("c")][string]
+	$Configuration = "Release",
+	[string]
+	$BuildToolsVersion = "0.9.7-test",
+	[switch]
+	$NoTest
 )
 
-$PACK_PROJS = @(
-	".\src\<PROJECT_NAME>\.csproj"
+$Solution=".\<SOLUTION_NAME>.sln"
+$TestProjects = @(
+	#".\src\<TEST_PROJECT_NAME>\bin\Release\<TEST_PROJECT_NAME>.dll"
+)
+$OutputPackages = @(
+	#".\src\<PROJECT_NAME>\.csproj"
 )
 
-# From https://github.com/aspnet/Security/blob/dev/run.ps1
-function Get-RemoteFile([string]$RemotePath, [string]$LocalPath) {
-    if ($RemotePath -notlike 'http*') {
-        Copy-Item $RemotePath $LocalPath
-        return
-    }
+try {
+	. "$PSScriptRoot/bootstrap.ps1"
+	Write-Host "BuildTools Initialization..." -NoNewline
+	Get-BuildTools | Out-Null
+	Write-Host "Done"
 
-    $retries = 10
-    while ($retries -gt 0) {
-        $retries -= 1
-        try {
-            Invoke-WebRequest -UseBasicParsing -Uri $RemotePath -OutFile $LocalPath
-            return
-        }
-        catch {
-            Write-Verbose "Request failed. $retries retries remaining"
-        }
-    }
+	# RESTORE PACKAGES
+	Write-Output "Restoring packages..."
+	Start-NuGetRestore -Configuration $Configuration $Solution
+	
+	# BUILD SOLUTION
+	Write-Output "Performing build..."
+	Start-MSBuild -Project $SOLUTION -Configuration $Configuration -Verbosity "M"	
 
-    Write-Error "Download failed: '$RemotePath'."
-}
-
-# Inspired by from https://github.com/aspnet/Security/blob/dev/run.ps1
-function Extract-Zip([string]$Src, [string]$Dst) {
-	if (Get-Command -Name 'Expand-Archive' -ErrorAction Ignore) {
-		Expand-Archive -Path $Src -DestinationPath $Dst -Force
+	# RUN TESTS
+	if ( !($NoTest.IsPresent) -and $TestProjects.Length -gt 0 ) {
+		Write-Output "Performing tests..."
+		foreach ($test_proj in $TestProjects) {
+			Write-Output "Testing $test_proj"
+			$result = Start-MSTest -Project $test_proj	
+			if ($result -ne 0){
+				throw "Test failed with code $result"
+			}
+		}
 	}
-	else {
-		Add-Type -AssemblyName System.IO.Compression.FileSystem
-		[System.IO.Compression.ZipFile]::ExtractToDirectory($Src, $Dst)
+
+	# CREATE NUGET PACKAGES
+	if ( $OutputPackages.Length -gt 0 ) {
+		Write-Output "Packaging..."
+		foreach ($pack_proj in $OutputPackages){
+			Write-Output "Packing $pack_proj"
+			$result = Start-MSBuild -Target "Pack" -Project $pack_proj -Configuration $Configuration -Verbosity "M"
+			if ($result -ne 0){
+				throw "Pack failed with code $result"
+			}
+		}
 	}
-}
 
-function Init-BuildTools(){
-	if ($env:CI_BUILDTOOLS_PATH) {
-		$BuildToolsRemotePath = "$($env:CI_BUILDTOOLS_PATH)/$BuildToolsVersion.zip"
-	} else {
-		$BuildToolsRemotePath = "https://github.com/csgsolutions/BuildTools/archive/$BuildToolsVersion.zip"
-	}
-	
-	Write-Host "Downloading build tools from $BuildToolsRemotePath"
-
-	$BuildToolsLocalPath = ".\"
-	$BuildToolsZipFile = "BuildTools-$BuildToolsVersion.zip"
-	
-	Get-RemoteFile $BuildToolsRemotePath $BuildToolsZipFile
-	
-	Extract-Zip $BuildToolsZipFile $BuildToolsLocalPath
-	
-	return (Resolve-Path "$BuildToolsLocalPath\BuildTools-$BuildToolsVersion").Path
-}
-
-#### MAIN ####
-
-Write-Output "----- GET BUILD TOOLING -----"
-
-$env:CI_BUILDTOOLS = Init-BuildTools
-
-Write-Output "Build Tools Path: $env:CI_BUILDTOOLS"
-
-if (!(Test-Path $env:CI_BUILDTOOLS)){
-	Write-Error "Build tools failed to download"
+	Write-Output "-------------------"
+	Write-Output "EVERYTHING WAS GOOD"
+	Write-Output "-------------------"
+		
+	exit 0
+} catch {
+	Write-Error $_
+	Write-Output "-------------"
+	Write-Output "*** ERROR ***"
+	Write-Output "-------------"
+	Write-Host "ERROR: An error occurred and the build was aborted." -ForegroundColor White -BackgroundColor Red
 	exit 3
 }
-
-# Import msbuild module
-Import-Module "$env:CI_BUILDTOOLS\modules\msbuild.psm1"
-
-$msbuild = Find-MsBuild
-
-# Error because we can't find msbuild
-if (!(Test-Path $msbuild)) {
-	Write-Error "Could not find msbuild.exe"
-	exit 3
-}
-
-# RESTORE PACKAGES
-Write-Output "----- RESTORING -----"
-.\apps\.nuget\nuget.exe restore $SOLUTION
-
-if ($LASTEXITCODE -ne 0){
-	Write-Error "***Restore Failed: $LASTEXITCODE***"
-	exit $LASTEXITCODE
-}
-
-# BUILD SOLUTION
-Write-Output "----- BUILDING -----"
-Invoke-Expression "& '$msbuild' '$SOLUTION' '/p:Configuration=$BUILD_CONFIG' '/v:M'"
-
-if ($LASTEXITCODE -ne 0){
-	Write-Error "***Build Failed: $LASTEXITCODE***"
-	exit $LASTEXITCODE
-}
-
-# RUN TESTS
-Write-Output "----- TESTING -----"
-
-$mstest = Find-MsTest
-
-foreach ($test_proj in $TEST_PROJS){
-	Write-Output "Testing $test_proj"
-	Invoke-Expression "& '$mstest' '/testcontainer:$test_proj'"
-	if ($LASTEXITCODE -ne 0){
-		Write-Error "***Test Failed: $LASTEXITCODE***"
-		exit $LASTEXITCODE
-	}
-}
-
-# CREATE NUGET PACKAGES
-Write-Output "----- PACKAGING -----"
-foreach ($pack_proj in $PACK_PROJS){
-	Write-Output "Packing $pack_proj"	
-	Invoke-Expression "& '$msbuild' '$pack_proj' '/t:Pack' '/p:Configuration=$BUILD_CONFIG' '/v:M'"
-	if ($LASTEXITCODE -ne 0){
-		Write-Error "***Pack Failed: $LASTEXITCODE***"
-		exit $LASTEXITCODE
-	}
-}
-
-Write-Output "*** RESTORE + BUILD + TEST SUCCESSFUL ***"
