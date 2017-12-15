@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Csg.BuildMetadata</id>
+    <version>0.9.12-preview</version>
+    <title>CSG Build Metadata</title>
+    <authors>Justin R. Buchanan</authors>
+    <owners>CSG</owners>
+	<iconUrl>http://packages.csgsolutions.com/icons/csg32.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Adds build server metadata to assemblies.</description>
+    <copyright>2017 Cornerstone Solutions Group</copyright>
+    <tags></tags>
+  </metadata>
+</package>

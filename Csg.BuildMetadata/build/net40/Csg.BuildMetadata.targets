@@ -1,7 +1,5 @@
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="Build.props" />
-
-	<Target Name="AddAssemblyDescription" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' ">
+<Project>
+	<Target Name="AddAssemblyDescription" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' AND '$(MSBuildProjectExtension)' == '.csproj' ">
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
 		  <AssemblyAttributes Include="AssemblyDescription">

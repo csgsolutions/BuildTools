@@ -1,6 +1,5 @@
 <Project>
-	<Import Project="Build.props" />
-	
+
 	<Target Name="AddAssemblyMetadataCSharp" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' AND '$(MSBuildProjectExtension)' == '.csproj'">
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
@@ -38,5 +37,19 @@
 		  <Compile Include="obj\GeneratedAssemblyInfo.vb" />
 		</ItemGroup>
 	</Target>
+
+	<Target Name="AddAssemblyDescription" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' AND '$(TargetFrameworkVersion)' == 'v4.0' ">
+		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
+		<ItemGroup>
+		  <AssemblyAttributes Include="AssemblyDescription">
+				<_Parameter1>CommitRev: $(CommitRevision), BuildNo: $(BuildNumber)</_Parameter1>
+		  </AssemblyAttributes>
+		</ItemGroup>
+		<Touch Files="obj\GeneratedAssemblyInfo.cs" AlwaysCreate="true"/>
+		<WriteCodeFragment Language="C#" OutputFile="obj\GeneratedAssemblyInfo.cs" AssemblyAttributes="@(AssemblyAttributes)" />
+		<ItemGroup>
+		  <Compile Include="obj\GeneratedAssemblyInfo.cs" />
+		</ItemGroup>
+	</Target>	
 
 </Project>
