@@ -6,7 +6,7 @@ Param(
 	[alias("c")][string]
 	$Configuration = "Release",
 	[string]
-	$BuildToolsVersion = "0.9.7-test",
+	$BuildToolsVersion = "0.9.11-preview",
 	[switch]
 	$NoTest
 )
