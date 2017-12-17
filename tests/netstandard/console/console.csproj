@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\classlib\classlib.csproj" />
+    <PackageReference Include="Csg.Reflection.BuildMetadata" Version="0.9.13-preview" />
+  </ItemGroup>
+
+</Project>

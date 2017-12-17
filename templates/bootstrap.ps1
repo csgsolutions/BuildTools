@@ -43,15 +43,15 @@ function Get-BuildTools(
 	Write-Host "Initializing build tools..." -NoNewline
 
 	if ($env:CI_BUILDTOOLS_PATH) {
-		$remotePath = "$($env:CI_BUILDTOOLS_PATH)/$version.zip"
+		$remotePath = "$($env:CI_BUILDTOOLS_PATH)/$Version.zip"
 	} else {
-		$remotePath = "https://github.com/csgsolutions/BuildTools/archive/$version.zip"
+		$remotePath = "https://github.com/csgsolutions/BuildTools/releases/download/$Version/BuildTools-$Version.zip"
 	}
 	
-	$localPath = ".\BuildTools-$version"
+	$localPath = ".\BuildTools-$Version"
 		
 	if ( !(Test-Path $localPath) ){
-		Get-RemoteFile $remotePath "BuildTools-$version.zip" | Expand-ZipFile -DestinationPath "./"		
+		Get-RemoteFile $remotePath "BuildTools-$Version.zip" | Expand-ZipFile -DestinationPath "./BuildTools-$Version"		
 	}
 	
 	if ( !(Test-Path $localPath) ){

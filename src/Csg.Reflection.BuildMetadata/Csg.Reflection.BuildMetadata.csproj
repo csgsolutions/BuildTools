@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
+    <Author>Justin R. Buchanan</Author>
+    <Version>$(BUILD_VERSION)</Version>
+  </PropertyGroup>
+
+</Project>
