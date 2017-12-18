@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\classlib\classlib.csproj" />
-    <PackageReference Include="Csg.Reflection.BuildMetadata" Version="0.9.13-preview" />
+    <PackageReference Include="Csg.Build.Metadata" Version="0.9.14-beta" />
   </ItemGroup>
 
 </Project>

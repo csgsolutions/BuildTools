@@ -33,5 +33,17 @@ namespace System.Reflection
         {
             return assembly.GetAssemblyMetadata("BuildNumber");
         }
+                
+        public static DateTime? GetBuildDate(this System.Reflection.Assembly assembly)
+        {
+            var dt = assembly.GetAssemblyMetadata("BuildDate");
+
+            if (string.IsNullOrEmpty(dt))
+            {
+                return null;
+            }
+
+            return DateTime.Parse(dt);
+        }
     }
 }

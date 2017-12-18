@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csg.Build.Metadata.Tasks" Version="0.9.13-preview" />
+    <PackageReference Include="Csg.Build.Metadata.Tasks" PrivateAssets="All" Version="0.9.14-beta" />
   </ItemGroup>
 
 </Project>

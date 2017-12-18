@@ -6,7 +6,7 @@ Param(
 	[alias("c")][string]
 	$Configuration = "Release",
 	[string]
-	$BuildToolsVersion = "0.9.13-preview",
+	$BuildToolsVersion = "0.9.14-beta",
 	[switch]
 	$NoTest
 )
@@ -59,7 +59,7 @@ try {
 		}
 	}
 
-	Write-Host "All Done. This build is great!" -ForegroundColor Green
+	Write-Host "All Done. This build is great! (as far as I can tell)" -ForegroundColor Green
 	exit 0
 } catch {
 	Write-Host "ERROR: An error occurred and the build was aborted." -ForegroundColor White -BackgroundColor Red

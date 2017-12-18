@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csg.Build.Metadata.Tasks" Version="0.9.13-preview" />
+    <PackageReference Include="Csg.Build.Metadata.Tasks" Version="0.9.14-beta" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Csg.Reflection.BuildMetadata\Csg.Reflection.BuildMetadata.csproj" />
+    <ProjectReference Include="..\..\src\Csg.Build.Metadata\Csg.Build.Metadata.csproj" />
   </ItemGroup>
 
 </Project>

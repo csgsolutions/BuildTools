@@ -4,6 +4,8 @@ $env:CI="true"
 $env:BUILD_BUILDNUMBER="42"
 $env:BUILD_SOURCEVERSION="abc"
 
+Import-Module "../src/Tools/modules/msbuild.psm1"
+
 function Test-AttributeValues($val, $test){
     if (!($val)){
         throw "No output from $test"
@@ -26,6 +28,14 @@ $val = & dotnet run
 Test-AttributeValues $val "netcoreapp"
 popd
 
+Write-Host "Testing net45" -ForegroundColor Magenta
+pushd .\net45
+Start-MSBuild -Task Restore -Project .\net45.csproj
+Start-MSBuild -Task Build -Project .\net45.csproj
+$val = & .\bin\Debug\net45.exe
+Test-AttributeValues $val "net45"
+popd
+
 pushd .\netstandard
 Write-Host "Testing NETStandard" -ForegroundColor Magenta
 dotnet restore
@@ -34,4 +44,6 @@ $val = & dotnet run --project .\console\
 Test-AttributeValues $val "netstandard"
 popd
 
+
+Write-Host "All done!" -ForegroundColor Green
 
