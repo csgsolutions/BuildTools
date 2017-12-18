@@ -6,10 +6,13 @@
     <title>CSG Build Metadata</title>
     <authors>Justin R. Buchanan</authors>
     <owners>CSG</owners>
-	  <iconUrl>http://packages.csgsolutions.com/icons/csg32.png</iconUrl>
+	<iconUrl>http://packages.csgsolutions.com/icons/csg32.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Adds build server metadata to assemblies.</description>
     <copyright>2017 Cornerstone Solutions Group</copyright>
+	<iconUrl>https://csgstorpub.blob.core.windows.net/images/csg-square-32.png</iconUrl>
+	<projectUrl>https://github.com/csgsolutions/buildtools</projectUrl>
+	<licenseUrl>https://github.com/csgsolutions/BuildTools/blob/master/LICENSE</licenseUrl>
     <tags></tags>
   </metadata>
 </package>
