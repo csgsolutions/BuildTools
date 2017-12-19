@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "console", "console\console.csproj", "{01E67862-8283-4C29-A308-7BA5FD79367B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "console", "console.csproj", "{01E67862-8283-4C29-A308-7BA5FD79367B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "classlib", "classlib\classlib.csproj", "{7E423E57-A065-4CE4-B9C6-06E92CB47724}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "classlib", "..\netstandard16.classlib\classlib.csproj", "{7E423E57-A065-4CE4-B9C6-06E92CB47724}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

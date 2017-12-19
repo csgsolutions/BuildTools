@@ -1,5 +1,8 @@
-$Version = "0.9.14-beta"
+$Version = "0.9.15-beta"
 $env:BUILD_VERSION = $Version
+
+Write-Host "Cleanup" -ForegroundColor Magenta
+Remove-Item ./bin/* -Force -Recurse
 
 Write-Host "Building Csg.Build.Metadata..." -ForegroundColor Magenta
 pushd ./src/Csg.Build.Metadata

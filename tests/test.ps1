@@ -1,49 +1,136 @@
 #!/usr/bin/env powershell
 
-$env:CI="true"
-$env:BUILD_BUILDNUMBER="42"
-$env:BUILD_SOURCEVERSION="abc"
 
-Import-Module "../src/Tools/modules/msbuild.psm1"
+function Get-NewExpected(){
+    return @{
+        "BuildNumber" = Get-Random;
+        "SourceVersion" = Get-Random;
+    }
+}
 
-function Test-AttributeValues($val, $test){
+function Set-VSTSEnvironment {
+    $values = Get-NewExpected
+    $env:BUILD_BUILDNUMBER = $values.BuildNumber
+    $env:BUILD_SOURCEVERSION = $values.SourceVersion
+    return $values
+}
+
+function Set-AppVeyorEnvironment {
+    $values = Get-NewExpected
+    $env:APPVEYOR_REPO_COMMIT = $values.BuildNumber
+    $env:APPVEYOR_BUILD_NUMBER = $values.SourceVersion
+    $values
+}
+
+function Set-CsgEnvironment {
+    $values = Get-NewExpected
+    $env:CSG_BUILDDATE = $values.BuildNumber
+    $env:CSG_SVNREV = $values.SourceVersion
+    $values
+}
+
+function Test-AttributeValues($val, $test, $Expected){
     if (!($val)){
         throw "No output from $test"
     }
 
-    if (!($val[0] -match "CommitRevision: $($env:BUILD_SOURCEVERSION)")) {
-        throw "Unexpected commit revision from $test"
+    if (!($val[0] -match "CommitRevision: $($Expected.SourceVersion)")) {
+        throw "Unexpected commit revision from $test. Got '${$val[0]}' expected '$($Expected.SourceVersion)'"
     }
 
-    if (!($val[1] -match "BuildNumber: $($env:BUILD_BUILDNUMBER)")) {
-        throw "Unexpected build number from $test"
+    if (!($val[1] -match "BuildNumber: $($Expected.BuildNumber)")) {
+        throw "Unexpected build number from $test. Got '${$val[1]}' expected '$($Expected.BuildNumber)'"
     }
 }
 
-Write-Host "Testing netcoreapp" -ForegroundColor Magenta
-pushd .\netcoreapp
-dotnet restore
-dotnet build
-$val = & dotnet run
-Test-AttributeValues $val "netcoreapp"
-popd
+function Test-DotNetProject($projectPath, $projectFile = "console.csproj", $Expected, $TestName){
+    Write-Host "Testing $projectPath..." -ForegroundColor Blue
+    try {
+        pushd $projectPath | Out-Null
+        Remove-Item ./obj/* -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
+        Remove-Item ./bin/* -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
+        Remove-Item dotnet.log -Force -ErrorAction SilentlyContinue
+        dotnet restore --no-cache $projectFile | Out-File -Append dotnet.log
+        dotnet build --no-restore $projectFile | Out-File -Append dotnet.log
+        $output = & dotnet run --no-build --no-restore
+        $output | Out-File -Append dotnet.log
+        Test-AttributeValues $output $projectPath
+        return @{ "Test" = "$TestName"; "Status" = "PASS" }
+    } catch {
+        Write-Error $_
+        return @{ "Test" = "$TestName"; "Status" = "FAIL" }
+    }
+    finally {
+        popd
+    }
+}
 
-Write-Host "Testing net45" -ForegroundColor Magenta
-pushd .\net45
-Start-MSBuild -Task Restore -Project .\net45.csproj
-Start-MSBuild -Task Build -Project .\net45.csproj
-$val = & .\bin\Debug\net45.exe
-Test-AttributeValues $val "net45"
-popd
+function Test-MSBuildProject($projectPath, $projectFile = "console.csproj", $Expected, $TestName){
+    Write-Host "Testing $projectPath..." -ForegroundColor Blue
+    try {
+        pushd $projectPath
+        Remove-Item ./obj/* -Recurse -Force -ErrorAction SilentlyContinue| Out-Null
+        Remove-Item ./bin/* -Recurse -Force -ErrorAction SilentlyContinue| Out-Null
+        Remove-Item msbuild.log -ErrorAction SilentlyContinue -Force
+        Invoke-Expression "& '$msbuild' '/nologo' '/t:Restore' '/p:Configuration=Debug' '/v:m' '$projectFile'" | Out-File -Append msbuild.log
+        if ($LASTEXITCODE -ne 0){
+            throw "Restore failed code: $LASTEXITCODE"
+        }
+        Invoke-Expression "& '$msbuild' '/nologo' '/p:Configuration=Debug' '/v:m' '$projectFile'" | Out-File -Append msbuild.log
+        if ($LASTEXITCODE -ne 0){
+            throw "Build failed code: $LASTEXITCODE"
+        }
+        $val = & .\bin\Debug\console.exe
+        $val | Out-File -Append msbuild.log
+        Test-AttributeValues $val $projectPath
+        return @{ "Test" = "$TestName"; "Status" = "PASS" }
+    } catch {
+        Write-Error $_
+        return @{ "Test" = "$TestName"; "Status" = "FAIL" }
+    }
+    finally {
+        popd
+    }
+}
 
-pushd .\netstandard
-Write-Host "Testing NETStandard" -ForegroundColor Magenta
-dotnet restore
-dotnet build
-$val = & dotnet run --project .\console\
-Test-AttributeValues $val "netstandard"
-popd
+$testResults = @()
+$env:CI="true"
+Import-Module "../src/Tools/modules/msbuild.psm1"
+$msbuild = Find-MSBuild
 
+# VSTS Environment
+$expected = Set-VSTSEnvironment $expected
+$testResults += (Test-MSBuildProject .\net45 -Expected $expected -TestName "VSTS net45")
+$testResults += (Test-DotNetProject .\netcoreapp -Expected $expected -TestName "VSTS netcoreapp2.0")
+$testResults += (Test-DotNetProject .\netstandard16.console -ProjectFile netstandard.sln -Expected $expected -TestName "VSTS netstandard1.6")
 
-Write-Host "All done!" -ForegroundColor Green
+# Appveyor Environment
+$expected = Set-AppVeyorEnvironment
+$testResults += (Test-MSBuildProject .\net45 -Expected $expected -TestName "AV net45")
+$testResults += (Test-DotNetProject .\netcoreapp -Expected $expected -TestName "AV netcoreapp2.0")
+$testResults += (Test-DotNetProject .\netstandard16.console -ProjectFile netstandard.sln -Expected $expected -TestName "AV netstandard1.6")
 
+# CSG Environment
+$expected = Set-CsgEnvironment
+$testResults += (Test-MSBuildProject .\net45 -Expected $expected -TestName "CSG net45")
+$testResults += (Test-DotNetProject .\netcoreapp -Expected $expected -TestName "CSG netcoreapp2.0")
+$testResults += (Test-DotNetProject .\netstandard16.console -ProjectFile netstandard.sln -Expected $expected -TestName "CSG netstandard1.6")
+
+# Test Summary Table
+Write-Host "----- TEST SUMMARY -----"
+$failCount = 0
+foreach ($test in $testResults) {
+    Write-Host $test.Test.PadRight(32,'.') -NoNewline
+    if ($test.Status -eq "PASS") {
+        Write-Host $test.Status -ForegroundColor Green
+    } else {
+        Write-Host $test.Status -ForegroundColor Red
+        $failCount++
+    }
+}
+
+Write-Host "All done!" -ForegroundColor Blue
+
+if ($failCount -gt 0){
+    exit 3
+}

@@ -6,8 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\classlib\classlib.csproj" />
-    <PackageReference Include="Csg.Build.Metadata" Version="0.9.14-beta" />
+    <ProjectReference Include="..\netstandard16.classlib\classlib.csproj" />
   </ItemGroup>
 
 </Project>

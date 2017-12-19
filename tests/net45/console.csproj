@@ -7,7 +7,7 @@
     <ProjectGuid>{806C1ECC-2119-4887-8729-D5E1E6843523}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>net45</RootNamespace>
-    <AssemblyName>net45</AssemblyName>
+    <AssemblyName>console</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,11 +48,4 @@
     <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-    <ItemGroup>
-    <PackageReference Include="Csg.Build.Metadata.Tasks" Version="0.9.14-beta" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Csg.Build.Metadata\Csg.Build.Metadata.csproj" />
-  </ItemGroup>
 </Project>
