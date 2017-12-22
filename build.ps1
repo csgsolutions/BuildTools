@@ -18,8 +18,10 @@ $BuildNumber = $BuildNumber.PadLeft(5, "0")
 
 # duplicate logic in version.props for zip and nuspec
 $PackageVersion = "$VersionPrefix-$VersionSuffix-$BuildNumber"
+$ZipVersion = "$VersionPrefix-$VersionSuffix"
 if ($IsFinalBuild -eq "true" -and $VersionSuffix -eq "rtm"){
     $PackageVersion = "$VersionPrefix"
+    $ZipVersion = "$VersionPrefix"
 } elseif ($IsFinalBuild -eq "true") {
     $PackageVersion = "$VersionPrefix-$VersionSuffix-final"
 }
@@ -40,6 +42,7 @@ Push-Location ./src/Csg.Build.Metadata.Tasks
 Pop-Location
 
 Write-Host "Creating BuildTools ZIP" -ForegroundColor Magenta
-Compress-Archive -Force -Path .\src\Tools\* -DestinationPath ".\bin\BuildTools-$PackageVersion.zip"
+$PackageVersion | Out-File .\src\Tools\VersionInfo.txt
+Compress-Archive -Force -Path .\src\Tools\* -DestinationPath ".\bin\BuildTools-$ZipVersion.zip"
 
 Write-Host "All good!" -ForegroundColor Green
