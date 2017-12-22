@@ -4,18 +4,6 @@
     <TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
     <PackageProjectUrl>https://github.com/csgsolutions/buildtools</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/csgsolutions/BuildTools/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageVersion>$(Version)</PackageVersion>
   </PropertyGroup>
-
-  <Target Name="ShowVersionInfo1" BeforeTargets="Build">
-    <Message Importance="High" Text="BEFOREBUILD: Version: $(Version), VersionPrefix: $(VersionPrefix), VersionSuffix: $(VersionSuffix), BuildNumber: $(BuildNumber), PackageVersion: $(PackageVersion)"/>
-  </Target>
-  <Target Name="ShowVersionInfo2" AfterTargets="Build">
-    <Message Importance="High" Text="AFTERBUILD: Version: $(Version), VersionPrefix: $(VersionPrefix), VersionSuffix: $(VersionSuffix), BuildNumber: $(BuildNumber), PackageVersion: $(PackageVersion)"/>
-  </Target>
-  <Target Name="ShowVersionInfo3" AfterTargets="Pack">
-    <Message Importance="High" Text="AFTERPACK: Version: $(Version), VersionPrefix: $(VersionPrefix), VersionSuffix: $(VersionSuffix), BuildNumber: $(BuildNumber), PackageVersion: $(PackageVersion)"/>
-  </Target>
-
 
 </Project>

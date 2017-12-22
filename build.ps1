@@ -36,7 +36,7 @@ Pop-Location
 
 Write-Host "Building Csg.Build.Metadata.Tasks NuGet package..." -ForegroundColor Magenta
 Push-Location ./src/Csg.Build.Metadata.Tasks
-& nuget pack -OutputDirectory ../../bin/ -Properties "PackageVersion=$PackageVersion"
+& '../../build/nuget.exe' pack -OutputDirectory ../../bin/ -Properties "PackageVersion=$PackageVersion"
 Pop-Location
 
 Write-Host "Creating BuildTools ZIP" -ForegroundColor Magenta
