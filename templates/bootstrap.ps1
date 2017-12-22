@@ -45,7 +45,7 @@ function Get-BuildTools(
 	if ($env:CI_BUILDTOOLS_PATH) {
 		$remotePath = "$($env:CI_BUILDTOOLS_PATH)/$Version.zip"
 	} else {
-		$remotePath = "https://github.com/csgsolutions/BuildTools/releases/download/$Version/BuildTools-$Version.zip"
+		$remotePath = "https://csgstorpub.blob.core.windows.net/buildtools/BuildTools-$Version.zip"
 	}
 	
 	$localPath = ".\BuildTools-$Version"
