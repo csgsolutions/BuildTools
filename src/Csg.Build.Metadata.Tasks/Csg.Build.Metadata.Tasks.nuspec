@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Csg.Build.Metadata.Tasks</id>
-    <version>1.0.0</version>
+    <version>$PackageVersion$</version>
     <title>CSG Build Metadata</title>
     <authors>Justin R. Buchanan</authors>
     <owners>CSG</owners>

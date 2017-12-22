@@ -43,7 +43,7 @@ function Test-AttributeValues($val, $test, $Expected){
     }
 }
 
-function Test-DotNetProject($projectPath, $projectFile = "console.csproj", $Expected, $TestName){
+function Test-DotNetProject($projectPath, $projectFile = "console.csproj", $Expected, $TestName, $Pack = $false){
     Write-Host "Testing $projectPath..." -ForegroundColor Blue
     try {
         pushd $projectPath | Out-Null
@@ -52,6 +52,11 @@ function Test-DotNetProject($projectPath, $projectFile = "console.csproj", $Expe
         Remove-Item dotnet.log -Force -ErrorAction SilentlyContinue
         dotnet restore --no-cache $projectFile | Out-File -Append dotnet.log
         dotnet build --no-restore $projectFile | Out-File -Append dotnet.log
+
+        if ($Pack -eq $true){
+            dotnet pack --no-restore $projectFile | Out-File -Append dotnet.log
+        }
+
         $output = & dotnet run --no-build --no-restore
         $output | Out-File -Append dotnet.log
         Test-AttributeValues $output $projectPath

@@ -5,7 +5,8 @@ function Find-NuGet {
     $testpaths= @(
         ".\.nuget\nuget.exe",
 		".\nuget\nuget.exe",
-		".\apps\.nuget\nuget.exe",
+        ".\apps\.nuget\nuget.exe",
+        ".\build\nuget.exe",
         "$env:LOCALAPPDATA\NuGet\NuGet.exe"
     )
     

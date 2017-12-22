@@ -1,6 +1,6 @@
 <Project>
 
-	<Target Name="AddAssemblyMetadataCSharp" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' AND '$(MSBuildProjectExtension)' == '.csproj'">
+	<Target Name="AddAssemblyMetadataCSharp" BeforeTargets="CoreCompile" Condition="'$(MSBuildProjectExtension)' == '.csproj' AND '$(CI)' != '' AND '$(GenerateAssemblyMetadataFromBuild)' != 'false'">
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
 		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(BuildNumber)' != ''">
@@ -23,7 +23,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="AddAssemblyMetadataVB" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' AND '$(MSBuildProjectExtension)' == '.vbproj'">
+	<Target Name="AddAssemblyMetadataVB" BeforeTargets="CoreCompile" Condition=" '$(MSBuildProjectExtension)' == '.vbproj' AND '$(CI)' != '' AND '$(GenerateAssemblyMetadataFromBuild)' != 'false'">
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
 		  <AssemblyAttributes Include="AssemblyMetadata" Condition=" '$(BuildNumber)' != ''">
@@ -46,7 +46,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="AddAssemblyDescription" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' AND '$(TargetFrameworkVersion)' == 'v4.0' ">
+	<Target Name="AddAssemblyDescription" BeforeTargets="CoreCompile" Condition="'$(MSBuildProjectExtension)' == '.csproj' AND '$(CI)' != '' AND '$(TargetFrameworkVersion)' == 'v4.0' AND '$(GenerateAssemblyMetadataFromBuild)' != 'false' ">
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
 		  <AssemblyAttributes Include="AssemblyDescription">

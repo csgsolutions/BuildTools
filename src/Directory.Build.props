@@ -1,0 +1,14 @@
+<Project>
+  <Import Project="../version.props" />
+  <ItemGroup>
+    <PackageReference Include="Csg.Build.Metadata.Tasks" PrivateAssets="All" Version="0.9.15-beta" />
+  </ItemGroup>
+  <PropertyGroup>
+    <PackageIconUrl>https://csgstorpub.blob.core.windows.net/images/csg-square-32.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/csgsolutions/buildtools</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/csgsolutions/BuildTools/blob/master/LICENSE</PackageLicenseUrl>
+    <Owner>CSG</Owner>
+    <Authors>CSG</Authors>
+    <Copyright>2017 Cornerstone Solutions Group</Copyright>
+  </PropertyGroup>
+</Project>
