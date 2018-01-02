@@ -1,5 +1,5 @@
 <Project>
   <ItemGroup>
-    <PackageReference Include="Csg.Build.Metadata.Tasks" PrivateAssets="All" Version="0.9.15-beta"></PackageReference>
+    <PackageReference Include="Csg.Build.Metadata.Tasks" PrivateAssets="All" Version="0.9.17-beta-*"></PackageReference>
   </ItemGroup>
 </Project>

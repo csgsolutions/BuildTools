@@ -44,7 +44,7 @@ function Test-AttributeValues($val, $test, $Expected){
 }
 
 function Test-DotNetProject($projectPath, $projectFile = "console.csproj", $Expected, $TestName, $Pack = $false){
-    Write-Host "Testing $projectPath..." -ForegroundColor Blue
+    Write-Host "Testing $TestName..." -ForegroundColor Blue
     try {
         pushd $projectPath | Out-Null
         Remove-Item ./obj/* -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
@@ -71,17 +71,21 @@ function Test-DotNetProject($projectPath, $projectFile = "console.csproj", $Expe
 }
 
 function Test-MSBuildProject($projectPath, $projectFile = "console.csproj", $Expected, $TestName){
-    Write-Host "Testing $projectPath..." -ForegroundColor Blue
+    Write-Host "Testing $TestName..." -ForegroundColor Blue
     try {
         pushd $projectPath
         Remove-Item ./obj/* -Recurse -Force -ErrorAction SilentlyContinue| Out-Null
         Remove-Item ./bin/* -Recurse -Force -ErrorAction SilentlyContinue| Out-Null
         Remove-Item msbuild.log -ErrorAction SilentlyContinue -Force
-        Invoke-Expression "& '$msbuild' '/nologo' '/t:Restore' '/p:Configuration=Debug' '/v:m' '$projectFile'" | Out-File -Append msbuild.log
+        Start-MSBuild -Project $projectFile -Target Restore -Configuration Debug -NoLogo | Out-File -Append msbuild.log
+        #Invoke-Expression "& '$msbuild' '/nologo' '/t:Restore' '/p:Configuration=Debug' '/v:m' '$projectFile'" | Out-File -Append msbuild.log
+       
         if ($LASTEXITCODE -ne 0){
             throw "Restore failed code: $LASTEXITCODE"
         }
-        Invoke-Expression "& '$msbuild' '/nologo' '/p:Configuration=Debug' '/v:m' '$projectFile'" | Out-File -Append msbuild.log
+
+        Start-MSBuild -Project $projectFile -Configuration Debug -NoLogo | Out-File -Append msbuild.log
+        #Invoke-Expression "& '$msbuild' '/nologo' '/p:Configuration=Debug' '/v:m' '$projectFile'" | Out-File -Append msbuild.log
         if ($LASTEXITCODE -ne 0){
             throw "Build failed code: $LASTEXITCODE"
         }
@@ -101,8 +105,6 @@ function Test-MSBuildProject($projectPath, $projectFile = "console.csproj", $Exp
 $testResults = @()
 $env:CI="true"
 Import-Module "../src/Tools/modules/msbuild.psm1"
-$msbuild = Find-MSBuild
-
 # VSTS Environment
 $expected = Set-VSTSEnvironment $expected
 $testResults += (Test-MSBuildProject .\net45 -Expected $expected -TestName "VSTS net45")
@@ -135,6 +137,7 @@ foreach ($test in $testResults) {
 }
 
 Write-Host "All done!" -ForegroundColor Blue
+Remove-Module -FullyQualifiedName "../src/Tools/modules/msbuild.psm1"
 
 if ($failCount -gt 0){
     exit 3

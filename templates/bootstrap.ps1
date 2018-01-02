@@ -48,10 +48,14 @@ function Get-BuildTools(
 		$remotePath = "https://csgstorpub.blob.core.windows.net/buildtools/BuildTools-$Version.zip"
 	}
 	
-	$localPath = ".\BuildTools-$Version"
+	$localPath = ".\obj\BuildTools-$Version"
+
+	if ( !(Test-Path .\obj)){
+		mkdir .\obj
+	}
 		
 	if ( !(Test-Path $localPath) ){
-		Get-RemoteFile $remotePath "BuildTools-$Version.zip" | Expand-ZipFile -DestinationPath "./BuildTools-$Version"		
+		Get-RemoteFile $remotePath ".\obj\BuildTools-$Version.zip" | Expand-ZipFile -DestinationPath $localPath
 	}
 	
 	if ( !(Test-Path $localPath) ){

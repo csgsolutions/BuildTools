@@ -6,9 +6,11 @@ Param(
 	[alias("c")][string]
 	$Configuration = "Release",
 	[string]
-	$BuildToolsVersion = "0.9.16-beta",
+	$BuildToolsVersion = "0.9.17-beta",
 	[switch]
-	$NoTest
+	$NoTest,
+	[string]
+	$BuildNumber=""
 )
 
 $Solution=".\<SOLUTION_NAME>.sln"
@@ -23,6 +25,10 @@ Write-Host "====================================================================
 Write-Host "The Build Script"
 Write-Host "=============================================================================="
 
+if ($BuildNumber) {
+	$BuildNumber = $BuildNumber.PadLeft(5, "0")
+}
+
 try {
 	. "$PSScriptRoot/bootstrap.ps1"
 	Get-BuildTools -Version $BuildToolsVersion | Out-Null
@@ -33,7 +39,7 @@ try {
 	
 	# BUILD SOLUTION
 	Write-Host "Performing build..." -ForegroundColor Magenta
-	Start-MSBuild -Project $SOLUTION -Configuration $Configuration -Verbosity "M"	
+	Start-MSBuild -Project $SOLUTION -Configuration $Configuration -Verbosity "M" -Properties @("BuildNumber=$BuildNumber")
 
 	# RUN TESTS
 	if ( !($NoTest.IsPresent) -and $TestProjects.Length -gt 0 ) {

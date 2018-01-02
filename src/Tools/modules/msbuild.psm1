@@ -62,10 +62,27 @@ function Find-MSTest([int]$Version = $default_mstest_version){
 }
 
 
-function Start-MSBuild([string]$Project, [int]$Version = $default_msbuild_version, [string]$Target = "Build", [string]$Configuration = "Debug", [string]$Verbosity = "M") {
+function Start-MSBuild(
+	[string]$Project, 
+	[int]$Version = $default_msbuild_version, 
+	[string]$Target = "Build", 
+	[string]$Configuration = "Debug", 
+	[string]$Verbosity = "M",
+	[switch]$NoLogo,
+	[string[]]$Properties
+	) {
 	$msbuildexe = Find-MSBuild -Version $Version
-
-	Invoke-Expression "& '$msbuildexe' '/t:$Target' '/p:Configuration=$Configuration' '/v:$Verbosity' '$Project'" | Write-Host
+	
+	$cmd = "& '$msbuildexe' '/t:$Target' '/p:Configuration=$Configuration' '/v:$Verbosity' "
+	if ($NoLogo.IsPresent) {
+		$cmd += "'/nologo' "
+	}
+	foreach ($property in $Properties) {
+		$cmd += "'/p:$property' "
+	}
+	$cmd += "'$Project' "
+	
+	Invoke-Expression $cmd | Write-Host
 
 	return $LASTEXITCODE
 }
