@@ -6,7 +6,7 @@ Param(
 	[alias("c")][string]
 	$Configuration = "Release",
 	[string]
-	$BuildToolsVersion = "0.9.17-beta",
+	$BuildToolsVersion = "0.9.20-beta",
 	[switch]
 	$NoTest,
 	[string]
@@ -76,4 +76,6 @@ try {
 	Write-Host "ERROR: An error occurred and the build was aborted." -ForegroundColor White -BackgroundColor Red
 	Write-Error $_	
 	exit 3
+} finally {
+	Remove-Module 'BuildTools' -ErrorAction Ignore
 }

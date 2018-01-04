@@ -104,8 +104,7 @@ function Test-MSBuildProject($projectPath, $projectFile = "console.csproj", $Exp
 
 $testResults = @()
 $env:CI="true"
-Import-Module "../src/Tools/modules/msbuild.psm1"
-Import-Module "../src/Tools/modules/vstest.psm1"
+Import-Module "../src/Tools/BuildTools.psd1"
 
 $vstest = Find-VSTest
 
@@ -145,7 +144,7 @@ foreach ($test in $testResults) {
 }
 
 Write-Host "All done!" -ForegroundColor Blue
-Remove-Module 'msbuild' -ErrorAction Ignore
+Remove-Module 'BuildTools' -ErrorAction Ignore
 
 if ($failCount -gt 0){
     exit 3

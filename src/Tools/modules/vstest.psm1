@@ -30,6 +30,10 @@ function Start-VSTest(
 	$vstestexe = Find-VSTest
 
 	& $vstestexe $Project @Args | Write-Host
+
+	if ($LASTEXITCODE -ne 0){
+		throw "vstest.console.exe exited with code $LASTEXITCODE."
+	}
 	
 	return $LASTEXITCODE
 }
