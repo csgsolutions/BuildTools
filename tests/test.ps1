@@ -105,6 +105,14 @@ function Test-MSBuildProject($projectPath, $projectFile = "console.csproj", $Exp
 $testResults = @()
 $env:CI="true"
 Import-Module "../src/Tools/modules/msbuild.psm1"
+Import-Module "../src/Tools/modules/vstest.psm1"
+
+$vstest = Find-VSTest
+
+if (!($vstest)){
+    throw "VSTest not found"
+}
+
 # VSTS Environment
 $expected = Set-VSTSEnvironment $expected
 $testResults += (Test-MSBuildProject .\net45 -Expected $expected -TestName "VSTS net45")
