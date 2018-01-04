@@ -69,8 +69,9 @@ function Get-BuildTools(
 	}
 		
 	Import-Module "$absolutePath\modules\msbuild.psm1"
+	Import-Module "$absolutePath\modules\vstest.psm1"
 	Import-Module "$absolutePath\modules\nuget.psm1"
-	
+
 	Write-Host "Done`r`n"
 
 	return $absolutePath 

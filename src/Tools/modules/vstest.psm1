@@ -19,10 +19,17 @@ function Find-VSTest(){
 	return $vstestexe
 }
 
-function Start-VSTest([string]$Project) {
+function Start-VSTest(
+	[Parameter(Mandatory = $true, Position = 0)]
+	[string]
+	$Project,
+	[parameter(mandatory=$false, ValueFromRemainingArguments=$true)]
+	[string[]]
+	$Args
+	) {
 	$vstestexe = Find-VSTest
 
-	Invoke-Expression "& '$vstestexe' '$Project'" | Write-Host
+	& $vstestexe $Project @Args | Write-Host
 	
 	return $LASTEXITCODE
 }
