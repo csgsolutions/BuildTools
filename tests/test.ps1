@@ -145,7 +145,7 @@ foreach ($test in $testResults) {
 }
 
 Write-Host "All done!" -ForegroundColor Blue
-Remove-Module -FullyQualifiedName "../src/Tools/modules/msbuild.psm1"
+Remove-Module 'msbuild' -ErrorAction Ignore
 
 if ($failCount -gt 0){
     exit 3
