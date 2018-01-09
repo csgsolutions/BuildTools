@@ -46,8 +46,8 @@ $ZipPath = ".\bin\BuildTools-$ZipVersion.zip"
 Compress-Archive -Force -Path .\src\Tools\* -DestinationPath $ZipPath
 
 $VersionParts = $VersionPrefix.Split(".")
-$LatestMinorVersion = "$($VersionParts[0]).$($VersionParts[1])"
-$LatestBuildVersion = "$VersionPrefix"
+$LatestMinorVersion = "$($VersionParts[0]).$($VersionParts[1])-latest"
+$LatestBuildVersion = "$VersionPrefix-latest"
 Copy-Item -Path $ZipPath -Destination ".\bin\BuildTools-$LatestMinorVersion.zip"
 if ($VersionSuffix -ne "stable"){
     Copy-Item -Path $ZipPath -Destination ".\bin\BuildTools-$LatestBuildVersion.zip"    
