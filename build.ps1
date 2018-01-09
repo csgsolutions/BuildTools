@@ -1,6 +1,6 @@
 Param(
     [string]
-    $VersionPrefix = "0.9.20",
+    $VersionPrefix = "1.0.0",
     [string]
     $VersionSuffix = "beta",
     [string]
@@ -46,13 +46,11 @@ $ZipPath = ".\bin\BuildTools-$ZipVersion.zip"
 Compress-Archive -Force -Path .\src\Tools\* -DestinationPath $ZipPath
 
 $VersionParts = $VersionPrefix.Split(".")
-$LatestMajorVersion = "$($VersionParts[0])-$VersionSuffix"
-$LatestMinorVersion = "$($VersionParts[0]).$($VersionParts[1])-$VersionSuffix"
-$LatestBuildVersion = "$VersionPrefix-$VersionSuffix"
-Copy-Item -Path $ZipPath -Destination ".\bin\BuildTools-$LatestMajorVersion.zip"
+$LatestMinorVersion = "$($VersionParts[0]).$($VersionParts[1])"
+$LatestBuildVersion = "$VersionPrefix"
 Copy-Item -Path $ZipPath -Destination ".\bin\BuildTools-$LatestMinorVersion.zip"
-if ($VersionSuffix -eq "stable"){
-    Copy-Item -Path $ZipPath -Destination ".\bin\BuildTools-$LatestBuildVersion.zip"
+if ($VersionSuffix -ne "stable"){
+    Copy-Item -Path $ZipPath -Destination ".\bin\BuildTools-$LatestBuildVersion.zip"    
 }
 
 Write-Host "All good!" -ForegroundColor Green
