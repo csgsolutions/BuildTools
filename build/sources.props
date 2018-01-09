@@ -8,6 +8,10 @@
     </RestoreSources>
     <RestoreSources>
       $(RestoreSources);
+      https://www.myget.org/F/csgsolutions-dev/api/v3/index.json
+    </RestoreSources>
+    <RestoreSources>
+      $(RestoreSources);
       https://api.nuget.org/v3/index.json;
     </RestoreSources>
   </PropertyGroup>
