@@ -84,6 +84,10 @@ function Start-MSBuild(
 	
 	Invoke-Expression $cmd | Write-Host
 
+	if ($LASTEXITCODE -ne 0){
+		throw "msbuild.exe exited with code $LASTEXITCODE."
+	}
+
 	return $LASTEXITCODE
 }
 
@@ -91,6 +95,10 @@ function Start-MSTest([string]$Project, [int]$Version = $default_mstest_version)
 	$mstestexe = Find-MSTest -Version $Version
 
 	Invoke-Expression "& '$mstestexe' '/testcontainer:$Project'" | Write-Host
-	
+
+	if ($LASTEXITCODE -ne 0){
+		throw "mstest.exe exited with code $LASTEXITCODE."
+	}
+
 	return $LASTEXITCODE
 }

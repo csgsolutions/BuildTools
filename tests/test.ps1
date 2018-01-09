@@ -104,7 +104,14 @@ function Test-MSBuildProject($projectPath, $projectFile = "console.csproj", $Exp
 
 $testResults = @()
 $env:CI="true"
-Import-Module "../src/Tools/modules/msbuild.psm1"
+Import-Module "../src/Tools/BuildTools.psd1"
+
+$vstest = Find-VSTest
+
+if (!($vstest)){
+    throw "VSTest not found"
+}
+
 # VSTS Environment
 $expected = Set-VSTSEnvironment $expected
 $testResults += (Test-MSBuildProject .\net45 -Expected $expected -TestName "VSTS net45")
@@ -137,7 +144,7 @@ foreach ($test in $testResults) {
 }
 
 Write-Host "All done!" -ForegroundColor Blue
-Remove-Module 'msbuild' -ErrorAction Ignore
+Remove-Module 'BuildTools' -ErrorAction Ignore
 
 if ($failCount -gt 0){
     exit 3

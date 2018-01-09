@@ -68,9 +68,8 @@ function Get-BuildTools(
 		$env:CI_BUILDTOOLS = $absolutePath
 	}
 		
-	Import-Module "$absolutePath\modules\msbuild.psm1"
-	Import-Module "$absolutePath\modules\nuget.psm1"
-	
+	Import-Module "$absolutePath\BuildTools.psd1"
+
 	Write-Host "Done`r`n"
 
 	return $absolutePath 
