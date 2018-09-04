@@ -2,13 +2,11 @@ Param(
     [string]
     $VersionPrefix = "1.0.0",
     [string]
-    $VersionSuffix = "beta",
+    $VersionSuffix = "stable",
     [string]
     $BuildNumber = "",
 	[alias("c")][string]
 	$Configuration = "Release",
-    [string]
-    $IsFinalBuild = "false",
     [switch]
     $NoTest
 )
