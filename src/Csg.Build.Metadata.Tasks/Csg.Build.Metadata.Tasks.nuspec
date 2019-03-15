@@ -8,7 +8,7 @@
     <owners>CSG</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Adds build server metadata to assemblies.</description>
-    <copyright>2017 Cornerstone Solutions Group</copyright>
+    <copyright>2019 Cornerstone Solutions Group</copyright>
 	<iconUrl>https://csgstorpub.blob.core.windows.net/images/csg-square-32.png</iconUrl>
 	<projectUrl>https://github.com/csgsolutions/buildtools</projectUrl>
 	<licenseUrl>https://github.com/csgsolutions/BuildTools/blob/master/LICENSE</licenseUrl>

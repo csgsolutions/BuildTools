@@ -1,14 +1,25 @@
 #!/usr/bin/env powershell
 
 
-function Get-NewExpected(){
+function Get-NewExpected() {
     return @{
         "BuildNumber" = Get-Random;
         "SourceVersion" = Get-Random;
     }
 }
 
+function Clear-Environment {
+    $env:BUILD_BUILDNUMBER = $Null
+    $env:BUILD_SOURCEVERSION = $Null
+    $env:APPVEYOR_REPO_COMMIT = $Null
+    $env:APPVEYOR_BUILD_NUMBER = $Null
+    $env:CSG_BUILDDATE = $Null
+    $env:CSG_SVNREV = $Null
+    $env:GIT_COMMITHASH = $Null
+}
+
 function Set-VSTSEnvironment {
+    Clear-Environment
     $values = Get-NewExpected
     $env:BUILD_BUILDNUMBER = $values.BuildNumber
     $env:BUILD_SOURCEVERSION = $values.SourceVersion
@@ -16,17 +27,19 @@ function Set-VSTSEnvironment {
 }
 
 function Set-AppVeyorEnvironment {
+    Clear-Environment
     $values = Get-NewExpected
-    $env:APPVEYOR_REPO_COMMIT = $values.BuildNumber
-    $env:APPVEYOR_BUILD_NUMBER = $values.SourceVersion
-    $values
+    $env:APPVEYOR_REPO_COMMIT = $values.SourceVersion
+    $env:APPVEYOR_BUILD_NUMBER = $values.BuildNumber
+    return $values
 }
 
 function Set-CsgEnvironment {
+    Clear-Environment
     $values = Get-NewExpected
     $env:CSG_BUILDDATE = $values.BuildNumber
     $env:CSG_SVNREV = $values.SourceVersion
-    $values
+    return $values
 }
 
 function Test-AttributeValues($val, $test, $Expected){
@@ -34,12 +47,12 @@ function Test-AttributeValues($val, $test, $Expected){
         throw "No output from $test"
     }
 
-    if (!($val[0] -match "CommitRevision: $($Expected.SourceVersion)")) {
-        throw "Unexpected commit revision from $test. Got '${$val[0]}' expected '$($Expected.SourceVersion)'"
+    if (!($val -match "CommitRevision: $($Expected.SourceVersion)")) {
+        throw "Unexpected commit revision from $test. Got '$val' expected '$($Expected.SourceVersion)'"
     }
 
-    if (!($val[1] -match "BuildNumber: $($Expected.BuildNumber)")) {
-        throw "Unexpected build number from $test. Got '${$val[1]}' expected '$($Expected.BuildNumber)'"
+    if (!($val -match "BuildNumber: $($Expected.BuildNumber)")) {
+        throw "Unexpected build number from $test. Got '$val' expected '$($Expected.BuildNumber)'"
     }
 }
 
@@ -59,7 +72,9 @@ function Test-DotNetProject($projectPath, $projectFile = "console.csproj", $Expe
 
         $output = & dotnet run --no-build --no-restore
         $output | Out-File -Append dotnet.log
-        Test-AttributeValues $output $projectPath
+        
+        Test-AttributeValues $output $projectPath $Expected
+
         return @{ "Test" = "$TestName"; "Status" = "PASS" }
     } catch {
         Write-Error $_
@@ -74,24 +89,29 @@ function Test-MSBuildProject($projectPath, $projectFile = "console.csproj", $Exp
     Write-Host "Testing $TestName..." -ForegroundColor Blue
     try {
         pushd $projectPath
-        Remove-Item ./obj/* -Recurse -Force -ErrorAction SilentlyContinue| Out-Null
-        Remove-Item ./bin/* -Recurse -Force -ErrorAction SilentlyContinue| Out-Null
+        Remove-Item ./obj/* -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
+        Remove-Item ./bin/* -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
+        
         Remove-Item msbuild.log -ErrorAction SilentlyContinue -Force
+
         Start-MSBuild -Project $projectFile -Target Restore -Configuration Debug -NoLogo | Out-File -Append msbuild.log
-        #Invoke-Expression "& '$msbuild' '/nologo' '/t:Restore' '/p:Configuration=Debug' '/v:m' '$projectFile'" | Out-File -Append msbuild.log
-       
+               
         if ($LASTEXITCODE -ne 0){
             throw "Restore failed code: $LASTEXITCODE"
         }
 
         Start-MSBuild -Project $projectFile -Configuration Debug -NoLogo | Out-File -Append msbuild.log
-        #Invoke-Expression "& '$msbuild' '/nologo' '/p:Configuration=Debug' '/v:m' '$projectFile'" | Out-File -Append msbuild.log
+        
         if ($LASTEXITCODE -ne 0){
             throw "Build failed code: $LASTEXITCODE"
         }
+
         $val = & .\bin\Debug\console.exe
+        Write-Host "Output $val"
         $val | Out-File -Append msbuild.log
-        Test-AttributeValues $val $projectPath
+
+        Test-AttributeValues $val $projectPath $Expected
+
         return @{ "Test" = "$TestName"; "Status" = "PASS" }
     } catch {
         Write-Error $_
@@ -113,7 +133,7 @@ if (!($vstest)){
 }
 
 # VSTS Environment
-$expected = Set-VSTSEnvironment $expected
+$expected = Set-VSTSEnvironment
 $testResults += (Test-MSBuildProject .\net45 -Expected $expected -TestName "VSTS net45")
 $testResults += (Test-DotNetProject .\netcoreapp -Expected $expected -TestName "VSTS netcoreapp")
 $testResults += (Test-DotNetProject .\netstandard16.console -ProjectFile netstandard.sln -Expected $expected -TestName "VSTS netstandard")
