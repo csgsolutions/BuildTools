@@ -20,11 +20,11 @@ function Find-MSBuild([int]$Version = $default_msbuild_version){
 			"$program_files\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe",
 			"$program_files\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe",
 			"$program_files\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe",
-			"$program_files\Microsoft Visual Studio\2019\Preview\MSBuild\15.0\Bin\MSBuild.exe",
-			"$program_files\Microsoft Visual Studio\2019\Enterprise\MSBuild\15.0\Bin\MSBuild.exe",
-			"$program_files\Microsoft Visual Studio\2019\Professional\MSBuild\15.0\Bin\MSBuild.exe",
-			"$program_files\Microsoft Visual Studio\2019\Community\MSBuild\15.0\Bin\MSBuild.exe",
-			"$program_files\Microsoft Visual Studio\2019\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
+			"$program_files\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe",
+			"$program_files\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
+			"$program_files\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe",
+			"$program_files\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe",
+			"$program_files\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
 		)
 	}
 		

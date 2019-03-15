@@ -115,20 +115,20 @@ if (!($vstest)){
 # VSTS Environment
 $expected = Set-VSTSEnvironment $expected
 $testResults += (Test-MSBuildProject .\net45 -Expected $expected -TestName "VSTS net45")
-$testResults += (Test-DotNetProject .\netcoreapp -Expected $expected -TestName "VSTS netcoreapp2.0")
-$testResults += (Test-DotNetProject .\netstandard16.console -ProjectFile netstandard.sln -Expected $expected -TestName "VSTS netstandard1.6")
+$testResults += (Test-DotNetProject .\netcoreapp -Expected $expected -TestName "VSTS netcoreapp")
+$testResults += (Test-DotNetProject .\netstandard16.console -ProjectFile netstandard.sln -Expected $expected -TestName "VSTS netstandard")
 
 # Appveyor Environment
 $expected = Set-AppVeyorEnvironment
 $testResults += (Test-MSBuildProject .\net45 -Expected $expected -TestName "AV net45")
-$testResults += (Test-DotNetProject .\netcoreapp -Expected $expected -TestName "AV netcoreapp2.0")
-$testResults += (Test-DotNetProject .\netstandard16.console -ProjectFile netstandard.sln -Expected $expected -TestName "AV netstandard1.6")
+$testResults += (Test-DotNetProject .\netcoreapp -Expected $expected -TestName "AV netcoreapp")
+$testResults += (Test-DotNetProject .\netstandard16.console -ProjectFile netstandard.sln -Expected $expected -TestName "AV netstandard")
 
 # CSG Environment
 $expected = Set-CsgEnvironment
 $testResults += (Test-MSBuildProject .\net45 -Expected $expected -TestName "CSG net45")
-$testResults += (Test-DotNetProject .\netcoreapp -Expected $expected -TestName "CSG netcoreapp2.0")
-$testResults += (Test-DotNetProject .\netstandard16.console -ProjectFile netstandard.sln -Expected $expected -TestName "CSG netstandard1.6")
+$testResults += (Test-DotNetProject .\netcoreapp -Expected $expected -TestName "CSG netcoreapp")
+$testResults += (Test-DotNetProject .\netstandard16.console -ProjectFile netstandard.sln -Expected $expected -TestName "CSG netstandard")
 
 # Test Summary Table
 Write-Host "----- TEST SUMMARY -----"
