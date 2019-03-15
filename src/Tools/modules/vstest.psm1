@@ -7,7 +7,12 @@ function Find-VSTest(){
 		"$program_files\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
 		"$program_files\Microsoft Visual Studio\2017\Professional\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
 		"$program_files\Microsoft Visual Studio\2017\Community\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
-		"$program_files\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\Extensions\TestPlatform\vstest.console.exe"
+		"$program_files\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
+		"$program_files\Microsoft Visual Studio\2019\Preview\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
+		"$program_files\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
+		"$program_files\Microsoft Visual Studio\2019\Professional\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
+		"$program_files\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
+		"$program_files\Microsoft Visual Studio\2019\TestAgent\Common7\IDE\Extensions\TestPlatform\vstest.console.exe"
 	)
 	
 	$vstestexe = Find-FirstExistingPath -Paths $testpaths
