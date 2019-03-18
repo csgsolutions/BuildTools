@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net45;netstandard1.6</TargetFrameworks>
+    <Description>Extension methods for retrieving assembly metadata.</Description>
     <PackageProjectUrl>https://github.com/csgsolutions/buildtools</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/csgsolutions/BuildTools/blob/master/LICENSE</PackageLicenseUrl>
   </PropertyGroup>

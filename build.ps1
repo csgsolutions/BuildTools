@@ -1,8 +1,8 @@
 Param(
     [string]
-    $VersionPrefix = "1.0.1",
+    $VersionPrefix = "1.0.2",
     [string]
-    $VersionSuffix = "stable",
+    $VersionSuffix = "preview",
     [string]
     $BuildNumber = "",
 	[alias("c")][string]
