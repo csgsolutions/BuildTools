@@ -13,10 +13,16 @@ function Find-NuGet {
     return Find-FirstExistingPath -Paths $testpaths
 }
 
-function Start-NuGetRestore([string]$Project, [string]$Configuration) {
-    $nugetexe = Find-NuGet
+function Start-NuGetRestore(
+    [string]$Project, 
+    [string]$Configuration, 
+    [string]$NugetExe = ""
+) {
+    if (!$NugetExe){
+        $NugetExe = Find-NuGet
+    }
 
-    if ($nugetexe){
+    if ($NugetExe){
         Invoke-Expression "& '$nugetexe' restore '$Project'" | Write-Host
         
 		if ($LASTEXITCODE -ne 0){

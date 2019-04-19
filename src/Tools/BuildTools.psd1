@@ -3,8 +3,8 @@
     RootModule = 'modules/buildtools.psm1'
     Author = 'CSG'
     CompanyName = 'CSG'
-    Copyright = '2018 Cornerstone Solutions Group'
-    ModuleVersion = '0.1'
+    Copyright = '2019 Cornerstone Solutions Group'
+    ModuleVersion = '1.0'
     Description = 'Functions for using BuildTools'
     PowerShellVersion = '4.0'
     FunctionsToExport = @('Find-MSBuild', 'Start-MSBuild', 'Find-VSTest', 'Start-VSTest', 'Find-NuGet', 'Start-NuGetRestore')

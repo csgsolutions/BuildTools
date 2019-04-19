@@ -1,6 +1,6 @@
 Param(
     [string]
-    $VersionPrefix = "1.0.2",
+    $VersionPrefix = "1.0.3",
     [string]
     $VersionSuffix = "preview",
     [string]

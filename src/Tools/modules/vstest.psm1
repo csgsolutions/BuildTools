@@ -1,18 +1,11 @@
 Import-Module "$PSScriptRoot/common.psm1"
 
+# Finds the latest version of VSTest installed as part of Visual Studio. This is only intended to work with Visual Studio 2015 and later. 
 function Find-VSTest(){	
 	$program_files = "${env:ProgramFiles(x86)}"
 
 	$testpaths = @(
-		"$program_files\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
-		"$program_files\Microsoft Visual Studio\2017\Professional\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
-		"$program_files\Microsoft Visual Studio\2017\Community\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
-		"$program_files\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
-		"$program_files\Microsoft Visual Studio\2019\Preview\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
-		"$program_files\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
-		"$program_files\Microsoft Visual Studio\2019\Professional\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
-		"$program_files\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\TestPlatform\vstest.console.exe",
-		"$program_files\Microsoft Visual Studio\2019\TestAgent\Common7\IDE\Extensions\TestPlatform\vstest.console.exe"
+		"$program_files\Microsoft Visual Studio\*\*\Common7\IDE\Extensions\TestPlatform\vstest.console.exe"	
 	)
 	
 	$vstestexe = Find-FirstExistingPath -Paths $testpaths
