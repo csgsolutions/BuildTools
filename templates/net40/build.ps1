@@ -35,7 +35,7 @@ try {
 
 	# RESTORE PACKAGES
 	Write-Host "Restoring Packages..." -ForegroundColor Magenta
-	Start-NuGetRestore -Configuration $Configuration $Solution
+	Start-NuGetRestore -Configuration $Configuration -Solution $Solution
 	
 	# BUILD SOLUTION
 	Write-Host "Performing build..." -ForegroundColor Magenta
