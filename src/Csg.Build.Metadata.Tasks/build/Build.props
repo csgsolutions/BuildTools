@@ -1,5 +1,4 @@
 <Project>
-	
 	<PropertyGroup Condition=" '$(BuildNumber)' == '' ">
 		<BuildNumber>NOT_SET</BuildNumber>
 		<BuildNumber Condition=" '$(BUILD_BUILDNUMBER)' != '' ">$(BUILD_BUILDNUMBER)</BuildNumber>
@@ -16,5 +15,10 @@
 	<PropertyGroup Condition=" '$(BuildDate)' == '' ">
 		<BuildDate>$([System.DateTime]::UtcNow.ToString("u"))</BuildDate>
 	</PropertyGroup>
-	
+	<PropertyGroup>
+		<!-- appveyor, csg build -->
+		<GenerateAssemblyMetadataFromBuild Condition=" '$(CI)' != '' AND $(GenerateAssemblyMetadataFromBuild) != 'false' ">true</GenerateAssemblyMetadataFromBuild>
+		<!-- Azure DevOps, TFS -->
+		<GenerateAssemblyMetadataFromBuild Condition=" '$(AGENT_ID)' != '' AND '$(SYSTEM_COLLECTIONID)' != '' AND $(GenerateAssemblyMetadataFromBuild) != 'false'">true</GenerateAssemblyMetadataFromBuild>
+	</PropertyGroup>
 </Project>

@@ -1,5 +1,5 @@
 <Project>
-	<Target Name="AddAssemblyDescription" BeforeTargets="CoreCompile" Condition=" '$(CI)' != '' AND '$(MSBuildProjectExtension)' == '.csproj' ">
+	<Target Name="AddAssemblyDescription" BeforeTargets="CoreCompile" Condition=" '$(MSBuildProjectExtension)' == '.csproj' AND '$(GenerateAssemblyMetadataFromBuild)' == 'true' ">
 		<Message Text="Build server configuration detected, setting Assembly metadata attributes..." />
 		<ItemGroup>
 		  <AssemblyAttributes Include="AssemblyDescription">

@@ -90,11 +90,11 @@ function Test-MSBuildProject($projectPath, $projectFile = "console.csproj", $Exp
     try {
         pushd $projectPath
         Remove-Item ./obj/* -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
-        Remove-Item ./bin/* -Recurse -Force -ErrorAction SilentlyContinue | Out-Null
-        
+        Remove-Item ./bin/* -Recurse -Force -ErrorAction SilentlyContinue | Out-Null        
         Remove-Item msbuild.log -ErrorAction SilentlyContinue -Force
+        $msbuild = Find-MSBuild
 
-        Start-MSBuild -Project $projectFile -Target Restore -Configuration Debug -NoLogo | Out-File -Append msbuild.log
+        Invoke-Expression "& '$msbuild' /nologo /t:Restore /p:Configuration=Debug /v:M /p:RestoreNoCache=true  $projectFile" | Out-File -Append msbuild.log
                
         if ($LASTEXITCODE -ne 0){
             throw "Restore failed code: $LASTEXITCODE"
@@ -124,6 +124,7 @@ function Test-MSBuildProject($projectPath, $projectFile = "console.csproj", $Exp
 
 $testResults = @()
 $env:CI="true"
+$env:GenerateAssemblyMetadataFromBuild="true"
 Import-Module "../src/Tools/BuildTools.psd1"
 
 $vstest = Find-VSTest
