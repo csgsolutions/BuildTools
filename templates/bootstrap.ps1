@@ -9,6 +9,7 @@ function Get-RemoteFile([string]$RemotePath, [string]$LocalPath) {
     while ($retries -gt 0) {
         $retries -= 1
         try {
+	    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
             Invoke-WebRequest -UseBasicParsing -Uri $RemotePath -OutFile $LocalPath
 			
 			return $LocalPath
