@@ -16,6 +16,10 @@ function Clear-Environment {
     $env:CSG_BUILDDATE = $Null
     $env:CSG_SVNREV = $Null
     $env:GIT_COMMITHASH = $Null
+    $env:CI=$Null
+    $env:AGENT_ID=$Null
+    $env:SYSTEM_COLLECTIONID=$Null
+    $env:GenerateAssemblyMetadataFromBuild=$Null
 }
 
 function Set-VSTSEnvironment {
@@ -23,6 +27,8 @@ function Set-VSTSEnvironment {
     $values = Get-NewExpected
     $env:BUILD_BUILDNUMBER = $values.BuildNumber
     $env:BUILD_SOURCEVERSION = $values.SourceVersion
+    $env:AGENT_ID="123"
+    $env:SYSTEM_COLLECTIONID="456"
     return $values
 }
 
@@ -31,12 +37,14 @@ function Set-AppVeyorEnvironment {
     $values = Get-NewExpected
     $env:APPVEYOR_REPO_COMMIT = $values.SourceVersion
     $env:APPVEYOR_BUILD_NUMBER = $values.BuildNumber
+    $env:CI="true"
     return $values
 }
 
 function Set-CsgEnvironment {
     Clear-Environment
     $values = Get-NewExpected
+    $env:CI="true"
     $env:CSG_BUILDDATE = $values.BuildNumber
     $env:CSG_SVNREV = $values.SourceVersion
     return $values
@@ -122,9 +130,13 @@ function Test-MSBuildProject($projectPath, $projectFile = "console.csproj", $Exp
     }
 }
 
+pushd ../
+.\build.ps1
+popd
+
 $testResults = @()
-$env:CI="true"
-$env:GenerateAssemblyMetadataFromBuild="true"
+#$env:CI="true"
+#$env:GenerateAssemblyMetadataFromBuild="true"
 Import-Module "../src/Tools/BuildTools.psd1"
 
 $vstest = Find-VSTest
@@ -132,6 +144,8 @@ $vstest = Find-VSTest
 if (!($vstest)){
     throw "VSTest not found"
 }
+
+& dotnet nuget locals all --clear
 
 # VSTS Environment
 $expected = Set-VSTSEnvironment

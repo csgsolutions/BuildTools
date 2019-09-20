@@ -1,6 +1,6 @@
 <Project>
   <ItemGroup>
-    <PackageReference Include="Csg.Build.Metadata" Version="1.0.3-*"></PackageReference>
-    <PackageReference Include="Csg.Build.Metadata.Tasks" PrivateAssets="All" Version="1.0.3-*"></PackageReference>
+    <PackageReference Include="Csg.Build.Metadata" Version="1.0.5-*"></PackageReference>
+    <PackageReference Include="Csg.Build.Metadata.Tasks" PrivateAssets="All" Version="1.0.5-*"></PackageReference>
   </ItemGroup>
 </Project>
