@@ -130,10 +130,6 @@ function Test-MSBuildProject($projectPath, $projectFile = "console.csproj", $Exp
     }
 }
 
-pushd ../
-.\build.ps1
-popd
-
 $testResults = @()
 #$env:CI="true"
 #$env:GenerateAssemblyMetadataFromBuild="true"
