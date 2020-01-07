@@ -1,9 +1,6 @@
 Import-Module "$PSScriptRoot/common.psm1"
 
-$default_msbuild_version = 15
-$default_mstest_version = 15
-
-function Find-MSBuild([int]$Version = $default_msbuild_version){
+function Find-MSBuild([string]$Version = "2019"){
 	$program_files = "${env:ProgramFiles(x86)}"
 
 	if ($Version -eq 12){
@@ -16,15 +13,15 @@ function Find-MSBuild([int]$Version = $default_msbuild_version){
 		)
 	} else {
 		$testpaths = @(
+			"$program_files\Microsoft Visual Studio\$Version\Preview\MSBuild\Current\Bin\MSBuild.exe",
+			"$program_files\Microsoft Visual Studio\$Version\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
+			"$program_files\Microsoft Visual Studio\$Version\Professional\MSBuild\Current\Bin\MSBuild.exe",
+			"$program_files\Microsoft Visual Studio\$Version\Community\MSBuild\Current\Bin\MSBuild.exe",
+			"$program_files\Microsoft Visual Studio\$Version\BuildTools\MSBuild\Current\Bin\MSBuild.exe",
 			"$program_files\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe",
 			"$program_files\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe",
 			"$program_files\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe",
-			"$program_files\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe",
-			"$program_files\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe",
-			"$program_files\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
-			"$program_files\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\MSBuild.exe",
-			"$program_files\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe",
-			"$program_files\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
+			"$program_files\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe"
 		)
 	}
 		
@@ -37,7 +34,7 @@ function Find-MSBuild([int]$Version = $default_msbuild_version){
 	return $msbuildexe
 }
 
-function Find-MSTest([int]$Version = $default_mstest_version){	
+function Find-MSTest([string]$Version = "2019"){	
 	$program_files = "${env:ProgramFiles(x86)}"
 	
 	if ($Version -eq 12) {
@@ -50,15 +47,15 @@ function Find-MSTest([int]$Version = $default_mstest_version){
 		)
 	} else {
 		$testpaths = @(
+			"$program_files\Microsoft Visual Studio\$Version\Preview\Common7\IDE\mstest.exe",
+			"$program_files\Microsoft Visual Studio\$Version\Enterprise\Common7\IDE\mstest.exe",
+			"$program_files\Microsoft Visual Studio\$Version\Professional\Common7\IDE\mstest.exe",
+			"$program_files\Microsoft Visual Studio\$Version\BuildTools\Common7\IDE\mstest.exe",
+			"$program_files\Microsoft Visual Studio\$Version\TestAgent\Common7\IDE\mstest.exe"
 			"$program_files\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\mstest.exe",
 			"$program_files\Microsoft Visual Studio\2017\Professional\Common7\IDE\mstest.exe",
 			"$program_files\Microsoft Visual Studio\2017\BuildTools\Common7\IDE\mstest.exe",
-			"$program_files\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\mstest.exe",
-			"$program_files\Microsoft Visual Studio\2019\Preview\Common7\IDE\mstest.exe",
-			"$program_files\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\mstest.exe",
-			"$program_files\Microsoft Visual Studio\2019\Professional\Common7\IDE\mstest.exe",
-			"$program_files\Microsoft Visual Studio\2019\BuildTools\Common7\IDE\mstest.exe",
-			"$program_files\Microsoft Visual Studio\2019\TestAgent\Common7\IDE\mstest.exe"
+			"$program_files\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\mstest.exe"
 		)
 	}
 	
@@ -74,7 +71,7 @@ function Find-MSTest([int]$Version = $default_mstest_version){
 
 function Start-MSBuild(
 	[string]$Project, 
-	[int]$Version = $default_msbuild_version, 
+	[int]$Version = "2019", 
 	[string]$Target = "Build", 
 	[string]$Configuration = "Debug", 
 	[string]$Verbosity = "M",
