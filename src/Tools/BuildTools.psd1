@@ -3,7 +3,7 @@
     RootModule = 'modules/buildtools.psm1'
     Author = 'CSG'
     CompanyName = 'CSG'
-    Copyright = '2019 Cornerstone Solutions Group'
+    Copyright = '2021 Cornerstone Solutions Group'
     ModuleVersion = '1.0'
     Description = 'Functions for using BuildTools'
     PowerShellVersion = '4.0'

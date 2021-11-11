@@ -3,8 +3,10 @@ Import-Module "$PSScriptRoot/common.psm1"
 # Finds the latest version of MSbuild installed as part of Visual Studio. This is only intended to work with Visual Studio 2015 and later. 
 function Find-MSBuild($VisualStudioVersion = "*"){
 	$program_files = "${env:ProgramFiles(x86)}"
+	$program_files64 = "${env:ProgramFiles}"
 	
 	$testpaths = @(
+		"$program_files64\Microsoft Visual Studio\$VisualStudioVersion\*\MSBuild\*\Bin\MSBuild.exe",
 		"$program_files\Microsoft Visual Studio\$VisualStudioVersion\*\MSBuild\*\Bin\MSBuild.exe"
 	)
 	
@@ -20,8 +22,10 @@ function Find-MSBuild($VisualStudioVersion = "*"){
 # Finds the latest version of MSTest installed as part of Visual Studio. This is only intended to work with Visual Studio 2015 and later. 
 function Find-MSTest($VisualStudioVersion = "*"){	
 	$program_files = "${env:ProgramFiles(x86)}"
+	$program_files64 = "${env:ProgramFiles}"
 	
 	$testpaths = @(
+		"$program_files64\Microsoft Visual Studio\$VisualStudioVersion\*\Common7\IDE\mstest.exe",
 		"$program_files\Microsoft Visual Studio\$VisualStudioVersion\*\Common7\IDE\mstest.exe"
 	)
 	
